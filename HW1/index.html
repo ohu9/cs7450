@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS7450 - Course Information</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="home">CS7450</a>
+            <ul class="nav-links">
+                <li><a href="#syllabus">Syllabus</a></li>
+                <li><a href="#schedule">Schedule</a></li>
+                <li><a href="#readings">Readings</a></li>
+                <li><a href="#assignments">Assignments</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <header class="hero">
+            <h1>CS7450: Information Visualization</h1>
+            <p class="subtitle">Spring 2026</p>
+        </header>
+
+        <section id="syllabus" class="section">
+            <h2>Syllabus</h2>
+            <div class="card">
+                <h3>Course Description</h3>
+                <p>This course is an advanced information visualization course focusing on research within this domain. Students should already have a good working knowledge of data visualization along the lines of what one would get from taking CS 4460 or CS 6730 at Georgia Tech or equivalent courses. This course (CS 7450) is NOT intended to be a student's first exposure to the data visualization area.</p>
+                <hr>
+                <h3>Instructor</h3>
+                <p><strong>Name:</strong> Yalong Yang</p>
+                <p><strong>Email:</strong> <a href="mailto:yalong.yang@gatech.edu">yalong.yang@gatech.edu</a></p>
+                <p><strong>Time & Location:</strong> Monday & Wednesday 3:30 - 4:45 PM | Mason Building, Room 2117</p>
+                <p><strong>Office Hours:</strong> Mon/Wed 3:00 PM - 4:00 PM</p>
+                <details>
+                    <summary><strong>Textbooks</strong></summary>
+                    <p>There are no required textbooks for this course. However, there is a collection of resources that you should find helpful for assignments throughout the course. There are also readings that we will cover throughout the course, which are all available while on the GT VPN (or on campus).</p>
+                </details>
+
+                <details>
+                    <summary><strong>Course Format</strong></summary>
+                    <p>The course will consist mainly of two parts: reading and discussing research papers about information visualization and learning how to program web-based visualizations (predominantly using d3.js).</p>
+                </details>
+
+                <details>
+                    <summary><strong>Reading List</strong></summary>
+                    <p>Please find the reading list we will use for in-class paper presentation below, under 'Readings.'</p>
+                </details>
+
+                <details>
+                    <summary><strong>Timeliness</strong></summary>
+                    <p>All assignments are due at 11:59 pm on Friday. Late work will receive a 10% per day penalty. After 5 days, a 0% will be given, and no submission will be accepted. Too much other work, being gone for the weekend, running out of paper, etc., are not emergencies. It is required to submit a "Class Absence Verification" using the following link AND send advance notification to Alysha Irvin with the instructor cc'ed. Severe emergency situations can be accommodated with flexibility. <a href="https://studentlife.gatech.edu/request-assistance">GT Assistance Request Information</a></p>
+                </details>
+
+                <details>
+                    <summary><strong>Late Days</strong></summary>
+                    <p>However, it is understandable that life events and other reasons come up that may require you to miss a deadline. As such, each student is given 2 “late days” that you can use throughout the semester. If you want to use any of your late days, add a note (or comment) to the Canvas submission at the time you submit. You cannot apply late days to assignments at the end of the semester or days after you submit your assignment. These are intended to be used in a situation where life events happen, not to retroactively apply them at the end of the semester.</p>
+                </details>
+
+                <details>
+                    <summary><strong>AI Assistant Policy</strong></summary>
+                    <p>We treat AI-based assistance, such as ChatGPT and Copilot, the same way we treat collaboration with other people: you are welcome to talk about your ideas and work with other people, both inside and outside the class, as well as with AI-based assistants.</p>
+                    <p>However, all work you submit must be your own. You should never include in your assignment anything that was not written directly by you without proper citation (including quotation marks and in-line citation for direct quotes).</p>
+                    <p>Including anything you did not write in your assignment without proper citation will be treated as an academic misconduct case. If you are unsure where the line is between collaborating with AI and copying AI, we recommend the following heuristics:</p>
+                    <p>Heuristic 1: Never hit “Copy” within your conversation with an AI assistant. You can copy your own work into your own conversation, but do not copy anything from the conversation back into your assignment.</p>
+                    <p>Instead, use your interaction with the AI assistant as a learning experience, then let your assignment reflect your improved understanding.</p>
+                    <p>Heuristic 2: Do not have your assignment and the AI agent open at the same time. Similar to the above, use your conversation with the AI as a learning experience, then close the interaction down, open your assignment, and let your assignment reflect your revised knowledge.</p>
+                    <p>This heuristic includes avoiding using AI directly integrated into your composition environment: just as you should not let a classmate write content or code directly into your submission, so also you should avoid using tools that directly add content to your submission.</p>
+                    <p>Deviating from these heuristics does not automatically qualify as academic misconduct; however, following these heuristics essentially guarantees your collaboration will not cross the line into misconduct.</p>
+                </details>
+                <details>
+                    <summary><strong>Grading and Assignments</strong></summary>
+                    <p>Final course grades may be curved (but not always). Grades of individual assignments will not be curved. If a curve is given, it will only be curved up (not down). Any regrade requests should be emailed directly to the TAs and need to describe the detailed concern for the regrade.</p>
+                    <p>Grading distributions for this course are:</p>
+                    <div id="grade-viz-container" style="display: flex; justify-content: center; margin-top: 20px;"></div>
+                    <div id="grade-legend" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px;"></div>
+                </details>
+                <details>
+                    <summary><strong>Homework Assignments (HW)</strong></summary>  
+                    <p>Details on HW assignments are on the Canvas site for this course. Due dates for each assignment can be found on Canvas and on the course Schedule. Grading distributions can be found on the course Syllabus. Submit all HW assignments on Canvas. Unless indicated by the HW instructions, all HWs are to be completed individually.</p>
+                    <p>These individual assignments will teach you the basic skills for developing web-based visualizations. You are expected to complete these assignments using d3.js.</p>
+                    <p>It is good practice to develop your assignments using some sort of version control. GaTech gives you access to GitHub, which is a good one to use if you haven’t done so already.</p>
+                    <p>When grading, we will use Google Chrome in Incognito Mode to run your visualizations. Further, when a server is required, we will use a Python server on localhost.</p>
+                    <p>When submitting on Canvas, make sure you submit a .zip containing all your files and name it Lastname_Firstname.zip (e.g., Yang_Yalong.zip) unless otherwise mentioned in the assignment.</p>
+                    <p>Warning: There are many existing examples and source code widely available online. While these are great resources for you to learn, note that copying these is considered a breach of the rules from the Office of Student Integrity and will be handled accordingly. Be careful and thoughtful to use these resources responsibly.</p>
+                </details>
+                <details>
+                    <summary><strong>Class Engagement</strong></summary>
+                    <p>This is an in-person section of the course, and all students are required and expected to attend class. On research days (Mondays), when other students are presenting papers, everyone should give the presenters their attention and be ready for a discussion afterward. On programming days (Wednesdays), the instructors will present material and then students will engage with interactive labs, so definitely bring your laptop that day.</p>
+                </details>
+                <details>
+                    <summary><strong>Expectations and Academic Integrity</strong></summary>
+                    <p><b>Mutual expectations.</b> At Georgia Tech we believe that it is important to continually strive for an atmosphere of mutual respect, acknowledgement, and responsibility between faculty members and the student body. See <a href="http://www.catalog.gatech.edu/rules/22/">http://www.catalog.gatech.edu/rules/22/</a> for an articulation of some basic expectations – that you can have of me, and that I have of you. In the end, simple respect for knowledge, hard work, and cordial interactions will help build the environment we seek. I encourage you to remain committed to the ideals of Georgia Tech while in this class, and always.</p>
+                    <p><b>Attendance is expected.</b> Institute-approved absences will be accommodated, as will absences for interviews, conferences, etc. Notify us by email or direct Canvas messages if you will miss class for one of these two reasons (if you feel some other reason for absence is reasonable, email us, but again, in advance).</p>
+                    <p><b>Contacting your instructor and TA.</b> For communication with TAs and Instructors, please prioritize Ed Discussion. If you use email, please include [CS7450] in the subject line.</p>
+                    <p><b>Collaboration and academic honesty.</b> Georgia Tech aims to cultivate a community based on trust, academic integrity, and honor. Students are expected to act according to the highest ethical standards. For information on Georgia Tech’s Academic Honor Code, please visit <a href="http://www.catalog.gatech.edu/policies/honor-code/">Academic Honor Code</a> or <a href="http://www.catalog.gatech.edu/rules/18/">Code of Conduct</a>.</p>
+                    <p>Any student suspected of cheating or plagiarizing on a test, assignment, or project will be reported to the Office of Student Integrity, which will investigate the incident and, if needed, identify the appropriate penalty for violations.</p>
+                    <p><b>In-class use of computers, cell phones and tablets.</b> Please use your technology appropriately while in class. Using computers. tablets, smartphones, watches, VR headsets, etc., in a way that reinforces the educational context, such as taking notes or visiting a website being discussed, is appropriate. Reading emails, playing games, browsing social media, watching Netflix, doing your HW assignments, purchasing football tickets, web browsing, etc. are not appropriate. Not only does this detract from your learning, it unavoidably distracts those sitting near you. Also, incoming emails and alerts are distracting. Even note-taking on your computer may not be such a great idea: studies have shown that note-taking by hand has been shown to be more efficient for learning (also see this news story), as opposed to a computer, but that’s your call. In short, it’s really in your best interest to take the 75 minutes out of your day, disconnect from the internet, and engage in the course.</p>
+                    <p><b>Accommodations for students with disabilities.</b> If you are a student with learning needs that require special accommodation, contact the Office of Disability Services (often referred to as ADAPTS) at http://disabilityservices.gatech.edu/ as soon as possible to make an appointment to discuss your special needs and to obtain an accommodations letter. Please also e-mail your instructor as soon as possible in order to set up a time to discuss your learning needs.</p>
+                    <p><b>Student Support Services.</b> In your time at Georgia Tech, you may find yourself in need of support. HereLinks to an external site., you will find some resources to support you both as a student and as a person.</p>
+                </details>
+            </div>
+        </section>
+
+        <section id="schedule" class="section">
+            <h2>Schedule</h2>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Date</th>
+                            <th>Topic</th>
+                            <th>Assignments Due</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>01/12</td>
+                            <td>Course Intro</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>01/14</td>
+                            <td>Assignments, Presentations, Programming Expectations</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>01/19</td>
+                            <td>No class, university holiday -- Martin Luther King, Jr. Day</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>01/21</td>
+                            <td>Techniques</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>01/26</td>
+                            <td>Web Development Fundamentals (The Web, HTML, CSS, SVG)</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>01/28</td>
+                            <td>Web Development Fundamentals - II (JS, DOM, and tooling)</td>
+                            <td>Reflection 1</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>02/02</td>
+                            <td>Empirical Study & Design Study (optional)</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>02/04</td>
+                            <td>Introduction to D3</td>
+                            <td>HW1</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>02/09</td>
+                            <td>Tree & Graph Visualization</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>02/11</td>
+                            <td>D3: Data Loading and Binding</td>
+                            <td>Prototype Part 1</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>02/16</td>
+                            <td>Temporal Data Visualization</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>02/18</td>
+                            <td>D3: Scales, Charts and Axes</td>
+                            <td>Reflection 2</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>02/23</td>
+                            <td>Geographic Visualization</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>02/25</td>
+                            <td>D3: Advanced Charts</td>
+                            <td>Prototype Part 2</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>03/02</td>
+                            <td>[Prototype - Idea Presentation] & Sport Visualization</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>03/04</td>
+                            <td>[Prototype - Idea Presentation] & D3: Interaction 1</td>
+                            <td>HW2</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>03/09</td>
+                            <td>Visualization & Human-AI Interaction</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>03/11</td>
+                            <td>D3: Interaction 2</td>
+                            <td>Reflection 3, Prototype Part 3</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>03/16</td>
+                            <td>Automated Visualization Design</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>03/18</td>
+                            <td>D3: Interaction 3</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>03/23</td>
+                            <td>Spring break -- no class</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>03/25</td>
+                            <td>Spring break -- no class</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>03/30</td>
+                            <td>Visual Perception and Misinterpretation</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>04/01</td>
+                            <td>D3: Force Layouts and Network Graph</td>
+                            <td>HW3</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>04/06</td>
+                            <td>Data Storytelling</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>04/08</td>
+                            <td>D3: Scrollytelling</td>
+                            <td>Prototype Part 4</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>04/13</td>
+                            <td>[Prototype Presentation] & Visualization Authoring</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>04/15</td>
+                            <td>[Prototype Presentation] & D3: Geo</td>
+                            <td>HW4</td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>04/20</td>
+                            <td>Immersive Visualization</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>04/22</td>
+                            <td>TBA</td>
+                            <td>Prototype Part 5</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>04/27</td>
+                            <td>Review and Reflection</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="readings" class="section">
+            <h2>Readings</h2>
+            <div id="readings-list" class="readings-grid">
+            </div>
+        </section>
+
+        <section id="assignments" class="section">
+            <h2>Assignments</h2>
+            <div id="assignments-list">
+                 <div class="loading">Loading assignments...</div>
+            </div>
+        </section>
+    </main>
+    <script src="main.js"></script>
+</body>
+</html>
