@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100vh;
+    padding-left: 1rem;
+}
+
+.html-bar-chart {
+    border: 1px solid black;
+    width: 50vw;
+    height: 45%;
+    text-align: center;
+
+    & > div {
+        display: flex;
+        justify-content: space-evenly;
+        padding: 1rem;
+    }
+}
+
+.svg-bar-chart {
+    width: 50%;
+    height: 500px;
+}
+
+.html-cols {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
