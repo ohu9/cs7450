@@ -1,0 +1,42 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: lightgray;
+    margin: 0;
+}
+
+#chart-container {
+    background-color: white;
+    border-radius: 5%;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    padding: 30px;
+
+}
+
+svg {
+    /* border: 1px solid #ddd; */
+    background-color: #fafafa;
+    padding: 20px;
+}
+
+circle {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+circle:hover {
+    opacity: 1;
+    transition-duration: all 2s ease-in;
+}
+
+.label {
+    font-size: 9pt;
+    display: none;
+}
+
+circle:hover + text.label {
+    display: block;
+}
