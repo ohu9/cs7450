@@ -1,3 +1,9 @@
+document.addEventListener('DOMContentLoaded', () => {
+    loadReadings();
+    loadAssignments();
+    renderGradeDistribution();
+});
+
 async function loadAssignments() {
     const container = document.getElementById('assignments-list');
     
