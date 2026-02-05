@@ -1,4 +1,4 @@
-/* Global Styles */
+/* Global colors */
 :root {
     --primary-color: #2563eb;
     --text-color: #1f2937;
@@ -107,6 +107,10 @@ main {
 .section-intro {
     margin-bottom: 20px;
     color: #6b7280;
+}
+
+#grade-viz-container {
+    width: 100%;
 }
 
 /* Cards */
@@ -254,7 +258,7 @@ details:last-child {
 
 summary {
     cursor: pointer;
-    list-style: none; /* Hide default arrow */
+    list-style: none; 
     padding: 10px 0;
     font-size: 1.05rem;
     color: var(--text-color);
@@ -264,7 +268,7 @@ summary {
 }
 
 summary::-webkit-details-marker {
-    display: none; /* Hide default arrow in WebKit */
+    display: none;
 }
 
 summary:hover {

@@ -1,21 +1,16 @@
-document.addEventListener('DOMContentLoaded', () => {
-    loadReadings();
-    loadAssignments();
-    // Use requestAnimationFrame to ensure DOM is fully ready for SVG calculations
-    requestAnimationFrame(renderGradeDistribution);
-});
-
 async function loadAssignments() {
     const container = document.getElementById('assignments-list');
     
     try {
+        // read from assignments.json created for this hw
         const response = await fetch('assignments.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const assignments = await response.json();
         
-        container.innerHTML = ''; // clear loading message
+        // clear loading message
+        container.innerHTML = ''; 
 
         assignments.forEach(assignment => {
             const card = document.createElement('div');
@@ -53,6 +48,7 @@ async function loadReadings() {
     const readingsContainer = document.getElementById('readings-list');
     
     try {
+        // read from given hw2-papers.csv file
         const response = await fetch('hw2-papers.csv');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -94,6 +90,7 @@ async function loadReadings() {
     }
 }
 
+// helper function to parse csv
 function parseCSV(text) {
     const lines = text.trim().split('\n');
     const headers = parseCSVLine(lines[0]);
@@ -136,6 +133,7 @@ function parseCSVLine(text) {
     return result;
 }
 
+// function to render the grade bar chart
 function renderGradeDistribution() {
     const data = [
         { label: 'HW Assignments', value: 30, color: '#3b82f6' },
@@ -150,72 +148,37 @@ function renderGradeDistribution() {
     
     if (!container || !legendContainer) return;
 
-    // svg config
-    const width = 300;
+    container.innerHTML = '';
+    legendContainer.innerHTML = '';
+
+    const width = 600;
     const height = 300;
-    const radius = Math.min(width, height) / 2;
-    const innerRadius = radius * 0.6; 
+    const barHeight = 35;
+    const gap = 15;
+    const maxVal = 40; 
+    const labelWidth = 160; 
+    const barWidthArea = width - labelWidth - 50;
 
-    let svgContent = '';
-    let startAngle = 0;
+    let svgInnerHtml = '';
 
-    // calculate total value
-    const total = data.reduce((sum, item) => sum + item.value, 0);
+    data.forEach((d, i) => {
+        const y = i * (barHeight + gap);
+        const barW = (d.value / maxVal) * barWidthArea;
 
-    data.forEach(item => {
-        // calculate arc angles
-        const sliceAngle = (item.value / total) * 2 * Math.PI;
-        const endAngle = startAngle + sliceAngle;
-
-        // calculate coordinates
-        const x1 = width / 2 + radius * Math.cos(startAngle - Math.PI / 2);
-        const y1 = height / 2 + radius * Math.sin(startAngle - Math.PI / 2);
-        const x2 = width / 2 + radius * Math.cos(endAngle - Math.PI / 2);
-        const y2 = height / 2 + radius * Math.sin(endAngle - Math.PI / 2);
-        
-        // inner arc coordinates (for donut hole)
-        const x3 = width / 2 + innerRadius * Math.cos(endAngle - Math.PI / 2);
-        const y3 = height / 2 + innerRadius * Math.sin(endAngle - Math.PI / 2);
-        const x4 = width / 2 + innerRadius * Math.cos(startAngle - Math.PI / 2);
-        const y4 = height / 2 + innerRadius * Math.sin(startAngle - Math.PI / 2);
-
-        // svg path command
-        const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
-        
-        // path definition for a donut slice
-        const pathData = [
-            `M ${x1} ${y1}`, // Move to outer start
-            `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`, // Outer arc
-            `L ${x3} ${y3}`, // Line to inner end
-            `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x4} ${y4}`, // Inner arc (reverse)
-            'Z' // Close path
-        ].join(' ');
-
-        svgContent += `<path d="${pathData}" fill="${item.color}" stroke="white" stroke-width="2">
-            <title>${item.label}: ${item.value}%</title>
-        </path>`;
-
-        // Add legend item
-        const legendItem = document.createElement('div');
-        legendItem.innerHTML = `
-            <div style="display: flex; align-items: center; font-size: 0.9rem;">
-                <span style="width: 12px; height: 12px; background-color: ${item.color}; border-radius: 2px; margin-right: 8px; display: inline-block;"></span>
-                <span>${item.label} (<strong>${item.value}%</strong>)</span>
-            </div>
+        svgInnerHtml += `
+            <g>
+                <text x="${labelWidth - 10}" y="${y + barHeight / 2}" dy="0.35em" text-anchor="end" fill="#374151" style="font-weight: 500; font-size: 14px;">${d.label}</text>
+                <rect x="${labelWidth}" y="${y}" width="${barW}" height="${barHeight}" fill="${d.color}" rx="4" class="bar">
+                    <title>${d.label}: ${d.value}%</title>
+                </rect>
+                <text x="${labelWidth + barW + 8}" y="${y + barHeight / 2}" dy="0.35em" fill="#4b5563" style="font-size: 13px;">${d.value}%</text>
+            </g>
         `;
-        legendContainer.appendChild(legendItem);
-
-        startAngle = endAngle;
     });
 
-    // create SVG element
     container.innerHTML = `
-        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 100%; height: auto;">
-            ${svgContent}
-            <div class="donut-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-            </div>
-             <!-- Text in center -->
-            <text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="20" font-weight="bold" fill="#374151">Grades</text>
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 100%; height: auto; font-family: sans-serif;">
+            ${svgInnerHtml}
         </svg>
     `;
 }
