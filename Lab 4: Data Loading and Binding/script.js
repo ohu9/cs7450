@@ -31,14 +31,51 @@ svg.append("text")
 svg.append("text")
     .attr("x", width)
     .attr("y", height + 20)
-    .text("STAT");
+    .text("Lvl 50 Attack");
 
 svg.append("text")
     .attr("x", 0)
     .attr("y", 15)
-    .text("STAT");
+    .text("Lvl 50 HP");
 
+const cleanDigimon = d => {
+    return {
+        name: d.Digimon,
+        hp: +d["Lv 50 HP"],
+        atk: +d["Lv50 Atk"],
+        memory: +d.Memory
+    }
+}
 
+d3.csv("Digimon.csv", cleanDigimon).then(data => {
+
+    const slider = d3.select("#data-slider");
+    const label = d3.select("#slider-value");
+
+    function updateChart(limit) {
+
+        const subset = data.slice(0, limit);
+        label.text(limit);
+
+        svg.selectAll("circle")
+            .data(subset)
+            .join("circle")
+            .attr("cx", d => ((d.atk - 50) / (350 - 50) * 500) + padding)
+            .attr("cy", d => height - ((d.hp - 500) / (2100 - 500) * 500))
+            .attr("r", d => d.memory)
+            .style("fill", "blue")
+            .style("stroke", "black")
+            .style("opacity", 0.7)
+
+    }
+
+    updateChart(slider.property("value"))
+
+    // event listener called updateChart whenever slider is moved
+    slider.on("input", function() {
+        updateChart(this.value);
+    })
+})
 // /* 
 
 // CLASS ACTIVITY!!! (These generally get a little harder as you go down the list)
