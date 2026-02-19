@@ -1,4 +1,4 @@
-/* Global colors */
+/* Global variables */
 :root {
     --primary-color: #2563eb;
     --text-color: #1f2937;
@@ -10,22 +10,33 @@
 
 html {
     scroll-behavior: smooth;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     margin: 0;
-    padding: 0;
-    background-color: var(--bg-color);
     color: var(--text-color);
+    background-color: var(--bg-color);
     line-height: 1.6;
 }
 
-/* Navigation */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #1d4ed8;
+}
+
+/* Layout */
 .navbar {
     position: sticky;
     top: 0;
     background-color: var(--nav-bg);
+    border-bottom: 1px solid var(--border-color);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     z-index: 1000;
     padding: 1rem 0;
@@ -34,17 +45,16 @@ body {
 .nav-container {
     max-width: 1000px;
     margin: 0 auto;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
 }
 
 .home {
     font-weight: 700;
     font-size: 1.25rem;
     color: var(--primary-color);
-    text-decoration: none;
 }
 
 .nav-links {
@@ -55,70 +65,62 @@ body {
     padding: 0;
 }
 
-.nav-links li a {
-    text-decoration: none;
+.nav-links a {
     color: var(--text-color);
     font-weight: 600;
     font-size: 0.95rem;
-    transition: color 0.2s;
 }
 
-.nav-links li a:hover {
+.nav-links a:hover {
     color: var(--primary-color);
 }
 
-/* Main Content */
 main {
     max-width: 1000px;
     margin: 0 auto;
     padding: 40px 20px;
 }
 
-.hero {
+/* Sections */
+.title {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
 }
 
-.hero h1 {
+.title h1 {
     font-size: 3rem;
-    margin-bottom: 10px;
+    margin: 0 0 0.5rem 0;
     color: #111827;
 }
 
-.hero .subtitle {
+.title .subtitle {
     font-size: 1.5rem;
     color: #6b7280;
+    margin: 0;
 }
 
-.section {
-    margin-bottom: 80px;
-    padding-top: 60px; 
-    margin-top: -60px;
+section[id] {
+    scroll-margin-top: 80px;
+    margin-bottom: 2rem;
 }
 
-.section h2 {
+h2 {
     font-size: 2rem;
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
     border-bottom: 3px solid var(--primary-color);
     display: inline-block;
     padding-bottom: 5px;
 }
 
-.section-intro {
-    margin-bottom: 20px;
-    color: #6b7280;
-}
-
-#grade-viz-container {
-    width: 100%;
-}
-
 /* Cards */
-.card {
+.card, .paper-card {
     background-color: var(--card-bg);
     border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .card h3 {
@@ -126,20 +128,14 @@ main {
     color: #374151;
 }
 
-.card p {
-    margin: 10px 0;
-    line-height: 1.6;
-    color: #4b5563;
-}
-
-/* Schedule Table */
+/* Tables */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
 th, td {
-    padding: 12px 15px;
+    padding: 12px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
@@ -153,40 +149,31 @@ tr:hover {
     background-color: #f9fafb;
 }
 
-/* Readings Grid */
+/* Grids */
 .readings-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
 
-.paper-card {
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border: 1px solid var(--border-color);
-}
-
-
+/* Paper Card Specifics */
 .paper-topic {
     font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--primary-color);
     font-weight: 700;
     letter-spacing: 0.05em;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
 }
 
 .paper-title {
     font-size: 1.1rem;
     font-weight: 600;
-    margin: 0 0 10px 0;
+    margin: 0 0 0.5rem 0;
     line-height: 1.4;
 }
 
 .paper-title a {
-    text-decoration: none;
     color: #111827;
 }
 
@@ -199,42 +186,10 @@ tr:hover {
     color: #6b7280;
 }
 
-.loading {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 20px;
-    color: #6b7280;
-}
-
-/* SVG Chart */
-.center-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.chart-title {
-    font-weight: bold;
-    font-size: 16px;
-    fill: #374151;
-}
-
-.bar {
-    transition: opacity 0.2s;
-    cursor: pointer;
-}
-
-.bar:hover {
-    opacity: 0.8;
-}
-
-
-/* Dropdown Styles */
+/* Interactive Elements */
 details {
-    margin-bottom: 15px;
+    padding: 10px 0;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
 }
 
 details:last-child {
@@ -243,27 +198,50 @@ details:last-child {
 
 summary {
     cursor: pointer;
-    list-style: none; 
-    padding: 10px 0;
-    font-size: 1.05rem;
-    color: var(--text-color);
+    font-weight: 500;
+    list-style: none;
     display: flex;
     align-items: center;
-    transition: color 0.2s;
+    justify-content: space-between;
 }
 
 summary::-webkit-details-marker {
     display: none;
 }
 
-summary:hover {
+summary:after {
+    content: "+";
+    font-size: 1.5rem;
     color: var(--primary-color);
+    line-height: 1;
 }
 
-summary::after {
-    content: '+'; 
-    margin-left: auto;
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--primary-color);
+details[open] summary:after {
+    content: "-";
+}
+
+/* D3 Tooltip */
+.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 8px 12px;
+    font: 12px sans-serif;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    pointer-events: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 1001;
+    white-space: nowrap;
+}
+
+.bar {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.bar:hover {
+    opacity: 0.8;
 }

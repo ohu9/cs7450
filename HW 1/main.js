@@ -1,11 +1,12 @@
-
-const container = document.getElementById('assignments-list');
-
 d3.json("assignments.json").then(data => {
+
+    const assignmentsContainer = document.getElementById('assignments-list');
+
     data.forEach(assignment => {
         const card = document.createElement('div');
         card.className = 'card';
         
+        // Link svg from heroicons.com
         card.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items: center;">
             <h3>${assignment.title}</h3>
@@ -22,148 +23,145 @@ d3.json("assignments.json").then(data => {
             </div>
             <details>
                 <summary><strong>Assignment Details</strong></summary>
-                <p style="white-space: pre-wrap;">${assignment.details}</p>
+                <p>${assignment.details}</p>
             </details>
         `;
-        container.appendChild(card);
+        assignmentsContainer.appendChild(card);
     });
 });
 
-async function loadReadings() {
+
+d3.csv("hw2-papers.csv").then(data => {
+
     const readingsContainer = document.getElementById('readings-list');
-    
-    try {
-        // read from given hw2-papers.csv file
-        const response = await fetch('hw2-papers.csv');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const csvText = await response.text();
-        const papers = parseCSV(csvText);
+    data.forEach(paper => {
+        const card = document.createElement('div');
+        card.className = 'paper-card';
         
-        // clear loading message
-        readingsContainer.innerHTML = '';
+        // clean up titles
+        const titleText = paper.Paper.replace(/^"|"$/g, '').trim();
 
-        papers.forEach(paper => {
-            // check for data, skip empty rows
-            if (!paper.Paper || !paper.Link) return;
-
-            const card = document.createElement('div');
-            card.className = 'paper-card';
-            
-            // clean up titles
-            const titleText = paper.Paper.replace(/^"|"$/g, '').trim();
-
-            // create card for reading 
-            card.innerHTML = `
-                <div class="paper-topic">${paper.Topic || 'General'}</div>
-                <h3 class="paper-title">
-                    <a href="${paper.Link}" target="_blank">${titleText}</a>
-                </h3>
-                <div class="paper-meta">
-                    Week ${paper.Week} – ${paper.Date}
-                </div>
-            `;
-            // add card to list
-            readingsContainer.appendChild(card);
-        });
-
-    // error handling
-    } catch (error) {
-        console.error('Error loading readings:', error);
-        readingsContainer.innerHTML = '<div class="error">Failed to load readings. Please try again later.</div>';
-    }
-}
-
-// helper function to parse csv
-function parseCSV(text) {
-    const lines = text.trim().split('\n');
-    const headers = parseCSVLine(lines[0]);
-    
-    const result = [];
-    
-    for (let i = 1; i < lines.length; i++) {
-        if (!lines[i].trim()) continue;
-        
-        const obj = {};
-        const currentline = parseCSVLine(lines[i]);
-        
-        for (let j = 0; j < headers.length; j++) {
-            obj[headers[j]] = currentline[j];
-        }
-        result.push(obj);
-    }
-    
-    return result;
-}
-
-function parseCSVLine(text) {
-    const result = [];
-    let currentCell = '';
-    let inQuotes = false;
-    
-    for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        
-        if (char === '"') {
-            inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-            result.push(currentCell.trim());
-            currentCell = '';
-        } else {
-            currentCell += char;
-        }
-    }
-    result.push(currentCell.trim());
-    return result;
-}
-
-// function to render the grade bar chart
-function renderGradeDistribution() {
-    const data = [
-        { label: 'HW Assignments', value: 30, color: '#3b82f6' },
-        { label: 'Reading Presentation', value: 15, color: '#10b981' },
-        { label: 'Reading Reflection', value: 10, color: '#f59e0b' },
-        { label: 'Research Prototype', value: 35, color: '#8b5cf6' },
-        { label: 'Class Engagement', value: 10, color: '#ef4444' }
-    ];
-
-    const container = document.getElementById('grade-viz-container');
-    const legendContainer = document.getElementById('grade-legend');
-    
-    if (!container || !legendContainer) return;
-
-    container.innerHTML = '';
-    legendContainer.innerHTML = '';
-
-    const width = 600;
-    const height = 300;
-    const barHeight = 35;
-    const gap = 15;
-    const maxVal = 40; 
-    const labelWidth = 160; 
-    const barWidthArea = width - labelWidth - 50;
-
-    let svgInnerHtml = '';
-
-    data.forEach((d, i) => {
-        const y = i * (barHeight + gap);
-        const barW = (d.value / maxVal) * barWidthArea;
-
-        svgInnerHtml += `
-            <g>
-                <text x="${labelWidth - 10}" y="${y + barHeight / 2}" dy="0.35em" text-anchor="end" fill="#374151" style="font-weight: 500; font-size: 14px;">${d.label}</text>
-                <rect x="${labelWidth}" y="${y}" width="${barW}" height="${barHeight}" fill="${d.color}" rx="4" class="bar">
-                    <title>${d.label}: ${d.value}%</title>
-                </rect>
-                <text x="${labelWidth + barW + 8}" y="${y + barHeight / 2}" dy="0.35em" fill="#4b5563" style="font-size: 13px;">${d.value}%</text>
-            </g>
+        // create card for reading 
+        card.innerHTML = `
+            <div class="paper-topic">${paper.Topic || 'General'}</div>
+            <h3 class="paper-title">
+                <a href="${paper.Link}" target="_blank">${titleText}</a>
+            </h3>
+            <div class="paper-meta">
+                Week ${paper.Week} – ${paper.Date}
+            </div>
         `;
+        // add card to list
+        readingsContainer.appendChild(card);
     });
+});
 
-    container.innerHTML = `
-        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 100%; height: auto; font-family: sans-serif;">
-            ${svgInnerHtml}
-        </svg>
-    `;
-}
+// BAR CHART
+const data = [
+    { label: 'HW Assignments', value: 30 },
+    { label: 'Reading Presentation', value: 15 },
+    { label: 'Reading Reflection', value: 10 },
+    { label: 'Research Prototype', value: 35 },
+    { label: 'Class Engagement', value: 10 }
+];
+
+const width = 600;
+const height = 400;
+const margin = { top: 20, right: 20, bottom: 20, left: 50 };
+
+const container = d3.select('#grade-viz-container')
+
+const svg = container.append("svg")
+    .attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom);
+
+const g = svg.append("g")
+	.attr("transform", `translate(${margin.left}, ${margin.top})`)
+    .style("fill", "red");
+
+// Scales
+const xScale = d3.scaleLinear()
+    .domain([0, 50])
+    .range([0, width - margin.left - margin.right]);
+
+const yScale = d3.scaleBand()
+    .domain(data.map(d => d.label))
+    .range([0, height - margin.top - margin.bottom])
+    .padding(0.2);
+
+const color = d3.scaleOrdinal()
+  .domain(data.map(d => d.label))
+  .range(d3.schemeTableau10);
+
+// Draw marks
+const bars = g.selectAll("rect")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("x", margin.left)
+    .attr("y", d => yScale(d.label))
+    .attr("width", d => xScale(d.value))
+    .attr("height", yScale.bandwidth())
+    .attr("fill", d => color(d.label))
+    .attr("opacity", 0.8);
+
+// Tooltips
+d3.select("#grade-viz-container").style("position", "relative");
+
+const tooltips = d3.select("#grade-viz-container")
+    .selectAll(".tooltip")
+    .data(data)
+    .enter()
+    .append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("opacity", 0)
+    .style("left", d => `${margin.left + xScale(d.value) + width / 4}px`)
+    .style("top", d => `${margin.top + yScale(d.label) + yScale.bandwidth() / 2 - 15}px`)
+    .html(d => `${d.label}: ${d.value}%`);
+
+
+// Axes
+const xAxis = g.append("g")
+	.attr("transform", `translate(${margin.left}, ${height - margin.bottom - margin.top})`)
+	.call(d3.axisBottom(xScale));
+
+const yAxis = g.append("g")
+	.attr("transform", `translate(${margin.left}, 0)`)
+	.call(d3.axisLeft(yScale));
+
+xAxis.append("text")
+	.attr("x", width / 2 - margin.left)
+	.attr("y", 40)
+	.text("Percentage (%)")
+    .style("text-anchor", "middle")
+    .style("font-size", "10pt")
+    .style("fill", "black");
+
+// Interaction
+bars.on("mouseover", (event, d) => {
+    d3.select(event.currentTarget)
+        .transition()
+        .duration(150)
+        .style("opacity", 1);
+        
+    // Find the corresponding tooltip and change its opacity
+    tooltips.filter(t => t === d)
+        .transition()
+        .duration(200)
+        .style("opacity", 0.9);
+})
+.on("mouseout", (event, d) => {
+    d3.select(event.currentTarget)
+        .transition()
+        .duration(150)
+        .style("opacity", 0.8);
+        
+    // Hide the corresponding tooltip
+    tooltips.filter(t => t === d)
+        .transition()
+        .duration(500)
+        .style("opacity", 0);
+});
+
+
