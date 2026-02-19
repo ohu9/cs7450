@@ -118,7 +118,6 @@ main {
     background-color: var(--card-bg);
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     margin-bottom: 20px;
 }
 
@@ -169,9 +168,6 @@ tr:hover {
     border: 1px solid var(--border-color);
 }
 
-.paper-card:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
 
 .paper-topic {
     font-size: 0.75rem;
@@ -196,7 +192,6 @@ tr:hover {
 
 .paper-title a:hover {
     color: var(--primary-color);
-    text-decoration: underline;
 }
 
 .paper-meta {
@@ -235,16 +230,6 @@ tr:hover {
 }
 
 
-/* Responsive */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-    }
-    .hero h1 {
-        font-size: 2rem;
-    }
-}
-
 /* Dropdown Styles */
 details {
     margin-bottom: 15px;
@@ -282,15 +267,3 @@ summary::after {
     font-size: 1.2rem;
     color: var(--primary-color);
 }
-
-details[open] summary::after {
-    content: '-';
-}
-
-details p {
-    margin: 10px 0;
-    line-height: 1.6;
-    color: #4b5563;
-}
-
-

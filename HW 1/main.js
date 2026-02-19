@@ -1,54 +1,33 @@
-document.addEventListener('DOMContentLoaded', () => {
-    loadReadings();
-    loadAssignments();
-    renderGradeDistribution();
-});
 
-async function loadAssignments() {
-    const container = document.getElementById('assignments-list');
-    
-    try {
-        // read from assignments.json created for this hw
-        const response = await fetch('assignments.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const assignments = await response.json();
+const container = document.getElementById('assignments-list');
+
+d3.json("assignments.json").then(data => {
+    data.forEach(assignment => {
+        const card = document.createElement('div');
+        card.className = 'card';
         
-        // clear loading message
-        container.innerHTML = ''; 
-
-        assignments.forEach(assignment => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items: center;">
-                <h3>${assignment.title}</h3>
-                    <span style="display:flex; flex-direction: row; align-items: center; gap: 10px; color:#4b5563; font-size:0.9rem;">
-                        <p style="margin-left: 10px; font-weight:bold; font-size:0.9rem;">Due: ${assignment.due}</p>
-                        ${assignment.link ? 
-                            `<a href="${assignment.link}" target="_blank">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="blue" style="width: 1.25rem; height: 1.25rem;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
-                                </svg>
-                            </a>` 
-                            : ''}
-                    </span>
-                </div>
-                <details>
-                    <summary><strong>Assignment Details</strong></summary>
-                    <p style="white-space: pre-wrap;">${assignment.details}</p>
-                </details>
-            `;
-            container.appendChild(card);
-        });
-
-    } catch (error) {
-        console.error('Error loading assignments:', error);
-        container.innerHTML = '<div class="error">Failed to load assignments. Please try again later.</div>';
-    }
-}
+        card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items: center;">
+            <h3>${assignment.title}</h3>
+                <span style="display:flex; flex-direction: row; align-items: center; gap: 10px; color:#4b5563; font-size:0.9rem;">
+                    <p style="margin-left: 10px; font-weight:bold; font-size:0.9rem;">Due: ${assignment.due}</p>
+                    ${assignment.link ? 
+                        `<a href="${assignment.link}" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="blue" style="width: 1.25rem; height: 1.25rem;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                            </svg>
+                        </a>` 
+                        : ''}
+                </span>
+            </div>
+            <details>
+                <summary><strong>Assignment Details</strong></summary>
+                <p style="white-space: pre-wrap;">${assignment.details}</p>
+            </details>
+        `;
+        container.appendChild(card);
+    });
+});
 
 async function loadReadings() {
     const readingsContainer = document.getElementById('readings-list');
