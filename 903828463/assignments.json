@@ -1,0 +1,74 @@
+[
+    {
+        "title": "Reading Reflection 1",
+        "due": "Jan 30, 2026",
+        "link": "https://gatech.instructure.com/courses/495474/assignments/2327858",
+        "details": "This assignment focuses on the research idea of the paper. Consider the following:\nWhat did the authors do?\nHow did the authors motivate this work? For example, how is it done today, and what are the limitations of current practices?\nWhat was the authors' approach, and how did they convince others of its success?\nRemember, do not simply repeat the content. Use the summary -> interpret -> reflect pattern. Discuss what the authors did well and what could be improved.\nConsider this process as a way to learn how to write your Prototype Part 1 assignment. Taking the paper you read as an example.\nWhich paper to read: Choose one paper from the entire reading list. The chosen paper should be different from the papers you use in the other two reading reflections.\n\nWhat to submit: Submit a PDF of your reflection, 1-2 pages, single-spaced, single-column, with a reasonable font size (~12pt)."
+    },
+    {
+        "title":"HW 1 - Web Stack",
+        "due":"Feb 6, 2026",
+        "link":"https://gatech.instructure.com/courses/495474/assignments/2327838",
+        "details":"For this assignment, you will practice using web stack basics and create a web page. For this, you have two options for what this page should be about: this course or a personal page for yourself. \n\nWhat to submit: You should put all the files for your webpage into a single folder, name that folder using your GTID, then create a .zip from the folder. Turn in this .zip. We will unzip this, host the root folder, and test your submission. Hint: be careful not to hard-code any paths relative to your machine. Use paths relative to the directory."
+    },
+    {
+        "title": "Reading Reflection 2",
+        "due": "Feb 20, 2026",
+        "link": "https://gatech.instructure.com/courses/495474/assignments/2327860",
+        "details": "This individual assignment focuses on the literature review section of the paper. While you should briefly describe the research idea, there's no need for extensive detail. Your reflection should include:\n\nResearch Idea: What was the research idea, and why is it novel and significant? (Briefly)\nLiterature Review\nWhat existing work is related to the research idea?\nWhat different research directions or sub-areas are described by the authors? Are these comprehensive? Why might another research direction (e.g., X) not be included?\nWhat are the representative works closely related to this research? What did they accomplish, and how do they relate to this research idea? Why there is still the need to carry out this work in such contexts? \nRemember, do not simply repeat the content. Use the summary -> interpret -> reflect pattern. Discuss what the authors did well and what could be improved.\n\nConsider this process as a way to learn how to write your Prototype Part 2 assignment. Taking the paper you read as an example.\n\nWhich paper to read: Choose one paper from the entire reading list. The chosen paper should be different from the papers you use in the other two reading reflections.\n\nWhat to submit: Submit a PDF of your reflection, 1-2 pages, single-spaced, single-column, with a reasonable font size (~12pt)."
+    },
+    {
+        "title": "Prototype Part 1 - Initial Ideation & Literature Review",
+        "due": "Feb 13, 2026",
+        "link": "https://gatech.instructure.com/courses/495474/assignments/2327861",
+        "details": "This assignment focuses on the research idea of the paper. Consider the following:\nWhat did the authors do?\nHow did the authors motivate this work? For example, how is it done today, and what are the limitations of current practices?\nWhat was the authors' approach, and how did they convince others of its success?\nRemember, do not simply repeat the content. Use the summary -> interpret -> reflect pattern. Discuss what the authors did well and what could be improved.\nConsider this process as a way to learn how to write your Prototype Part 1 assignment. Taking the paper you read as an example.\nWhich paper to read: Choose one paper from the entire reading list. The chosen paper should be different from the papers you use in the other two reading reflections.\n\nWhat to submit: Submit a PDF of your reflection, 1-2 pages, single-spaced, single-column, with a reasonable font size (~12pt).\nResearch Prototype Overview\nThe goal of this assignment group (research prototype) is to give you an end-to-end experience of a visualization research project. \nYou will write a complete proposal for a potential new research project in information visualization, and produce a preliminary research prototype.\nLargely speaking, there are two major parts involved in almost any research projects: Ideation (parts 1-2) and Implementation (parts 3-5).\nTo complete this proposal, follow these steps:\n\nInitial Ideation & Literature Review: Develop an initial (broad) research project idea with a clear goal, motivation, and contribution. Then conduct a thorough literature review to highlight the novelty and significance of your topic compared to existing work.\nPolished Ideation: Narrow down the scope of your research project idea based on the literature review. Make it clear about its novelty and significance of your proposed work.\nMethod and Plan: Create a comprehensive research plan, detailing the methods and setup for your project.\nPrototype: Implement the research plan.\nBy completing these steps, you’ll have an almost-ready project that could lead to a conference submission, such as the IEEE VIS Short Paper trackLinks to an external site.. You could also use it for an independent study or a PhD project in visualization. Of course, continuing with your proposed project is up to you.\n\nIndividual or Team: You can choose to complete the research prototype individually or as a team (with maximum of 3 students). \nPlease sign up your team using the spreadsheet: CS7450-Spring26-PrototypeTeamSignUp.xlsxLinks to an external site..\n\nIf you decide to work as a team, in the first submission, a 'team agreement' needs to be submitted, including details about how and when to collaborate. For example, the answers to the following questions:\n- Who is the team leader?\n- How will you communicate?\n- How/when will you meet?\n- How will you collaborate on implementation?\n- How will you deal with non-performing members?\nOnly the team leader needs to submit for all prototype assignment submissions.\n\n \nProposal Part 1 - Initial Ideation & Literature Review\n\nFor Part 1, you need to write the first draft of 'introduction' and 'related work' sections of a research paper to describe your research idea, and what is the current state-of-the-art.\n\nStart by considering how to generate a strong research idea with a scope achievable in 1-2 semesters. Aim for proposals that are neither too simple nor overly complex.\n\nA good place to start for this is to think about which 'type' of research (and thus proposal) you want to focus on. \n\nNew Technique: Identify a gap for a new visualization or interaction technique. Describe this gap and how your work will address it, including design goals and sketches.\nNew User Study: Identify a knowledge gap in visualization that needs a well-designed study. Outline the gap, research questions, and methodology.\nNew Domain Tool: Consider a domain where visualization could enhance workflow. Describe the existing workflow and how visualization can help.\nThe readings in the first three topics focus on one of these types respectively. There are other 'types,' but these above should get you started. If you are interested in other types, take a look at the Six VIS AreasLinks to an external site. defined by the IEEE VIS paper submission process. Here is another magazine-styled article explaining various visualization research contributionsLinks to an external site..\n\nAfter identify a broad research idea, it's essential to conduct a thorough literature review of existing work related to your research idea. This helps ensure your idea remains novel and that you're not reinventing the wheel.\n\nSteps for Conducting a Literature Review:\n\nIdentify 2-3 relevant sub-directions. It is always a good idea to divide and conquer, which also makes your literature review more structured.\nSearch for papers. Considering the following tips:\nPrioritize papers from reputable venues: A Guide to the Quality of Different Visualization VenuesLinks to an external site..\nUse the “source” filter from Google Scholar, e.g., limit papers from TVCGLinks to an external site..\nRead the searched papers.\nBefore reading the full paper, do a quick skim (e.g., reading the abstract and figures) to make sure it is worthy reading.\nSummarize them in a good narrative.\nYou should read at least 10 relevant papers and include the discussion of them in your report.\n \n\nEvaluation: Your proposal will be graded on clarity, thoughtfulness, and articulation.\n\nWriting Tip: You are also expected to submit a 'Reading Reflection' at the same time in a separate assignment. Using your selected paper as an example. Write a similar 'introduction' and 'related work' for this assignment.\n\nSubmission Guidelines: Submit a 1-2 page document in double-column conference format (title required, no abstract needed) as a PDF. Use the following template for formatting: IEEE TemplateLinks to an external site..\n\nPlease also include your team agreement as a separate page that DOES NOT need to follow the template."
+    },
+    {
+        "title": "Prototype Part 2 - Polished Ideation & Expanded Literature Review",
+        "due": "Feb 27, 2026",
+        "link": "https://gatech.instructure.com/courses/495474/assignments/2327852",
+        "details": "Oftentimes, after an initial literature review round, researchers want to polish their proposed research idea.\nResearchers now have a more comprehensive understanding of what has been done in the direction.\n\nThe goal of this part is to make your research idea more specific and concrete, usually with a narrower scope to highlight its novelty.\nAnother goal is to obtain a solid understanding of the significance of your proposed project, and articulate it well.\n\nWhat to do: First, expand your literature review, including at least 20 papers in total now, and discuss them in your \"related work\" section now. Then, revise your \"introduction\" section to make it crystal-clear about the following questions:\n1. What are you trying to do? Articulate your objectives using absolutely no jargon.\n2. How is it done today, and what are the limits of current practice?\n3. What is new in your approach and why do you think it will be successful?\n4. Who cares? If you are successful, what difference will it make?\n\nMaking sure, the novelty and significance of your proposed idea is clearly articulated and convincing.\n\nWriting Tip: take your research reflection assignment as a chance to do a deep analysis of a modal paper.\n\nSubmission Guidelines: We want you to submit two things:\n\nIEEE format report. Update the content and submit it.\nA 2-min video explaining your ideas, covering the answers to the four questions aforementioned.\nZip these two files, and submit them together."
+    },
+    {
+        "title":"HW 2",
+        "due":"Mar 4, 2026",
+        "link":"",
+        "details":"TBD"
+    },
+    {
+        "title":"Reading Reflection 3",
+        "due":"Mar 11, 2026",
+        "link":"",
+        "details":"TBD"
+    },
+    {
+        "title":"Prototype Part 3",
+        "due":"Mar 11, 2026",
+        "link":"",
+        "details":"TBD"
+    },
+    {
+        "title":"HW 3",
+        "due":"Apr 1, 2026",
+        "link":"",
+        "details":"TBD"
+    },
+    {
+        "title":"Prototype Part 4",
+        "due":"Apr 8, 2026",
+        "link":"",
+        "details":"TBD"
+    },
+    {
+        "title":"HW 4",
+        "due":"Apr 15, 2026",
+        "link":"",
+        "details":"TBD"
+    },
+    {
+        "title":"Prototype Part 5",
+        "due":"Apr 22, 2026",
+        "link":"",
+        "details":"TBD"
+    }
+]

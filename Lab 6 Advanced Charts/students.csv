@@ -1,0 +1,195 @@
+Previous_College,Previous_Major,Current_College,Current_Major,Count
+Computing,Computer Science,Computing,Computer Science,85
+Computing,Computer Science,Computing,Computer Science,92
+Computing,Computer Science,Design,Industrial Design,3
+Computing,Computer Science,Engineering,Computer Engineering,5
+Engineering,Aerospace Engineering,Engineering,Aerospace Engineering,70
+Engineering,Aerospace Engineering,Computing,Computer Science,12
+Engineering,Aerospace Engineering,Engineering,Mechanical Engineering,8
+Engineering,Mechanical Engineering,Engineering,Mechanical Engineering,78
+Engineering,Mechanical Engineering,Computing,Computer Science,15
+Engineering,Mechanical Engineering,Business,Business Administration,4
+Sciences,Biology,Sciences,Biology,65
+Sciences,Biology,Sciences,Chemistry,10
+Sciences,Biology,Computing,Computer Science,7
+Sciences,Chemistry,Sciences,Chemistry,55
+Sciences,Chemistry,Engineering,Chemical Engineering,12
+Sciences,Physics,Sciences,Physics,40
+Sciences,Physics,Engineering,Aerospace Engineering,6
+Sciences,Physics,Computing,Computer Science,9
+Design,Architecture,Design,Architecture,50
+Design,Architecture,Design,Industrial Design,5
+Design,Industrial Design,Design,Industrial Design,45
+Design,Industrial Design,Computing,Computer Science,4
+Business,Business Administration,Business,Business Administration,95
+Business,Business Administration,Computing,Computer Science,10
+Liberal Arts,Economics,Liberal Arts,Economics,60
+Liberal Arts,Economics,Business,Business Administration,12
+Liberal Arts,Economics,Computing,Computer Science,5
+Liberal Arts,Public Policy,Liberal Arts,Public Policy,40
+Liberal Arts,Public Policy,Liberal Arts,Economics,6
+Engineering,Electrical Engineering,Engineering,Electrical Engineering,65
+Engineering,Electrical Engineering,Computing,Computer Science,18
+Engineering,Civil Engineering,Engineering,Civil Engineering,55
+Engineering,Civil Engineering,Design,Architecture,4
+Computing,Computational Media,Computing,Computational Media,40
+Computing,Computational Media,Design,Industrial Design,7
+Computing,Computer Science,Engineering,Electrical Engineering,2
+Engineering,Biomedical Engineering,Engineering,Biomedical Engineering,72
+Engineering,Biomedical Engineering,Sciences,Biology,10
+Sciences,Mathematics,Computing,Computer Science,22
+Sciences,Mathematics,Business,Business Administration,5
+Liberal Arts,History,Liberal Arts,History,30
+Liberal Arts,History,Liberal Arts,Public Policy,4
+Engineering,Industrial Engineering,Engineering,Industrial Engineering,80
+Engineering,Industrial Engineering,Business,Business Administration,15
+Engineering,Industrial Engineering,Computing,Computer Science,8
+Computing,Computer Science,Sciences,Mathematics,3
+Engineering,Mechanical Engineering,Engineering,Aerospace Engineering,5
+Sciences,Psychology,Sciences,Psychology,60
+Sciences,Psychology,Computing,Computer Science,4
+Liberal Arts,Literature,Liberal Arts,Literature,25
+Liberal Arts,Literature,Liberal Arts,History,3
+Business,Accounting,Business,Accounting,50
+Business,Accounting,Business,Business Administration,8
+Engineering,Chemical Engineering,Engineering,Chemical Engineering,62
+Engineering,Chemical Engineering,Sciences,Chemistry,6
+Computing,Computer Science,Liberal Arts,Economics,2
+Engineering,Aerospace Engineering,Sciences,Physics,4
+Sciences,Earth Sciences,Sciences,Earth Sciences,30
+Sciences,Earth Sciences,Liberal Arts,Public Policy,3
+Design,Music Technology,Design,Music Technology,25
+Design,Music Technology,Computing,Computer Science,6
+Business,Finance,Business,Finance,70
+Business,Finance,Business,Business Administration,10
+Engineering,Environmental Engineering,Engineering,Environmental Engineering,45
+Engineering,Environmental Engineering,Liberal Arts,Public Policy,5
+Computing,Cybersecurity,Computing,Cybersecurity,55
+Computing,Cybersecurity,Computing,Computer Science,12
+Sciences,Neuroscience,Sciences,Neuroscience,48
+Sciences,Neuroscience,Sciences,Biology,8
+Liberal Arts,Philosophy,Liberal Arts,Philosophy,20
+Liberal Arts,Philosophy,Liberal Arts,Public Policy,5
+Engineering,Materials Science,Engineering,Materials Science,40
+Engineering,Materials Science,Engineering,Mechanical Engineering,5
+Design,Urban Planning,Design,Urban Planning,35
+Design,Urban Planning,Design,Architecture,6
+Business,Marketing,Business,Marketing,55
+Business,Marketing,Business,Business Administration,9
+Computing,Data Science,Computing,Data Science,65
+Computing,Data Science,Computing,Computer Science,15
+Computing,Data Science,Business,Finance,4
+Sciences,Statistics,Sciences,Statistics,45
+Sciences,Statistics,Computing,Computer Science,10
+Sciences,Statistics,Business,Finance,6
+Engineering,Nuclear Engineering,Engineering,Nuclear Engineering,25
+Engineering,Nuclear Engineering,Engineering,Mechanical Engineering,4
+Liberal Arts,Global Studies,Liberal Arts,Global Studies,35
+Liberal Arts,Global Studies,Business,Business Administration,7
+Design,Graphic Design,Design,Graphic Design,40
+Design,Graphic Design,Computing,Computational Media,8
+Business,Supply Chain,Business,Supply Chain,45
+Business,Supply Chain,Engineering,Industrial Engineering,6
+Engineering,Systems Engineering,Engineering,Systems Engineering,50
+Engineering,Systems Engineering,Computing,Computer Science,5
+Sciences,Astronomy,Sciences,Astronomy,25
+Sciences,Astronomy,Sciences,Physics,7
+Liberal Arts,Sociology,Liberal Arts,Sociology,30
+Liberal Arts,Sociology,Liberal Arts,Public Policy,4
+Computing,Human-Computer Interaction,Computing,Human-Computer Interaction,40
+Computing,Human-Computer Interaction,Design,Industrial Design,6
+Sciences,Physics,Engineering,Electrical Engineering,3
+Computing,Data Science,Sciences,Mathematics,12
+Business,Finance,Liberal Arts,Economics,8
+Engineering,Mechanical Engineering,Engineering,Industrial Engineering,10
+Engineering,Civil Engineering,Engineering,Environmental Engineering,7
+Sciences,Biology,Engineering,Biomedical Engineering,15
+Computing,Cybersecurity,Engineering,Electrical Engineering,4
+Design,Architecture,Engineering,Civil Engineering,2
+Liberal Arts,Public Policy,Business,Business Administration,6
+Sciences,Chemistry,Engineering,Materials Science,4
+Engineering,Computer Engineering,Computing,Computer Science,25
+Engineering,Computer Engineering,Engineering,Electrical Engineering,10
+Computing,Computer Science,Engineering,Computer Engineering,15
+Engineering,Industrial Engineering,Liberal Arts,Economics,5
+Sciences,Mathematics,Sciences,Statistics,18
+Business,Marketing,Liberal Arts,Global Studies,3
+Design,Industrial Design,Engineering,Mechanical Engineering,2
+Liberal Arts,History,Liberal Arts,Philosophy,2
+Sciences,Psychology,Sciences,Neuroscience,14
+Engineering,Chemical Engineering,Sciences,Biology,3
+Computing,Computational Media,Computing,Data Science,5
+Business,Accounting,Business,Finance,12
+Sciences,Biology,Sciences,Psychology,6
+Liberal Arts,Economics,Business,Finance,10
+Engineering,Aerospace Engineering,Engineering,Systems Engineering,8
+Design,Music Technology,Computing,Human-Computer Interaction,4
+Sciences,Statistics,Computing,Data Science,20
+Business,Supply Chain,Business,Marketing,5
+Engineering,Nuclear Engineering,Sciences,Physics,2
+Computing,Computer Science,Computing,Cybersecurity,10
+Engineering,Mechanical Engineering,Engineering,Materials Science,6
+Sciences,Chemistry,Sciences,Biology,4
+Liberal Arts,Philosophy,Liberal Arts,Literature,3
+Design,Graphic Design,Design,Music Technology,2
+Business,Business Administration,Business,Marketing,15
+Sciences,Mathematics,Engineering,Systems Engineering,7
+Engineering,Electrical Engineering,Engineering,Computer Engineering,12
+Computing,Data Science,Computing,Cybersecurity,8
+Sciences,Astronomy,Sciences,Physics,10
+Liberal Arts,Global Studies,Liberal Arts,Public Policy,6
+Design,Urban Planning,Liberal Arts,Public Policy,4
+Engineering,Environmental Engineering,Sciences,Earth Sciences,3
+Computing,Human-Computer Interaction,Computing,Computational Media,9
+Business,Finance,Business,Accounting,5
+Sciences,Neuroscience,Sciences,Psychology,12
+Engineering,Biomedical Engineering,Engineering,Chemical Engineering,5
+Liberal Arts,Sociology,Liberal Arts,History,4
+Design,Architecture,Design,Urban Planning,8
+Sciences,Earth Sciences,Engineering,Environmental Engineering,5
+Business,Supply Chain,Business,Finance,4
+Computing,Cybersecurity,Computing,Data Science,7
+Engineering,Systems Engineering,Engineering,Aerospace Engineering,6
+Liberal Arts,Literature,Liberal Arts,Philosophy,2
+Design,Industrial Design,Design,Graphic Design,5
+Engineering,Materials Science,Engineering,Chemical Engineering,4
+Computing,Computer Science,Computing,Human-Computer Interaction,6
+Business,Marketing,Business,Supply Chain,3
+Sciences,Biology,Sciences,Neuroscience,10
+Liberal Arts,Public Policy,Liberal Arts,Sociology,5
+Engineering,Civil Engineering,Design,Urban Planning,3
+Sciences,Chemistry,Engineering,Chemical Engineering,8
+Computing,Data Science,Sciences,Statistics,15
+Business,Finance,Business,Supply Chain,4
+Engineering,Aerospace Engineering,Engineering,Nuclear Engineering,2
+Design,Architecture,Engineering,Civil Engineering,5
+Liberal Arts,Economics,Liberal Arts,Global Studies,4
+Sciences,Physics,Sciences,Astronomy,6
+Engineering,Electrical Engineering,Computing,Cybersecurity,5
+Computing,Computational Media,Design,Graphic Design,7
+Business,Accounting,Business,Supply Chain,2
+Sciences,Psychology,Liberal Arts,Sociology,5
+Engineering,Mechanical Engineering,Engineering,Nuclear Engineering,3
+Liberal Arts,History,Liberal Arts,Global Studies,2
+Design,Music Technology,Design,Graphic Design,4
+Sciences,Mathematics,Computing,Data Science,12
+Engineering,Industrial Engineering,Business,Supply Chain,6
+Computing,Human-Computer Interaction,Computing,Data Science,5
+Business,Marketing,Business,Accounting,4
+Sciences,Neuroscience,Sciences,Biology,6
+Liberal Arts,Philosophy,Liberal Arts,History,3
+Engineering,Chemical Engineering,Engineering,Materials Science,5
+Design,Industrial Design,Computing,Human-Computer Interaction,4
+Computing,Computer Science,Business,Finance,5
+Business,Business Administration,Liberal Arts,Economics,10
+Sciences,Biology,Sciences,Chemistry,8
+Engineering,Mechanical Engineering,Engineering,Systems Engineering,7
+Computing,Data Science,Business,Marketing,4
+Sciences,Physics,Engineering,Aerospace Engineering,5
+Liberal Arts,Public Policy,Sciences,Earth Sciences,2
+Design,Architecture,Design,Music Technology,1
+Engineering,Civil Engineering,Engineering,Environmental Engineering,6
+Computing,Cybersecurity,Computing,Computer Science,15
+Business,Finance,Business,Marketing,8
+Sciences,Mathematics,Sciences,Physics,5
+Liberal Arts,Economics,Liberal Arts,Public Policy,7
