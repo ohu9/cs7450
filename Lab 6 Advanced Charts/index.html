@@ -11,6 +11,14 @@
             <div id="chart-container">
                 <h1>GT Colleges and Majors</h1>
                 </select>
+                <select id="chart-select">
+                    <option value="treemap" selected>Student Majors Breakdown</option>
+                    <option value="chord" selected>Major Transfers</option>
+                    <option value="sankey" selected>College Transfers</option>
+                </select>
+                <div id="treemap"></div>
+                <div id="chord"></div>
+                <div id="sankey"></div>
             </div>
         </div>
         <!-- Lots of scripts this time! -->
@@ -21,4 +29,4 @@
         <script src="sankey.js"></script>
         <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
     </body>
-</html>
+</html> 

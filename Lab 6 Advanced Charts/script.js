@@ -1,5 +1,21 @@
 // EMPTY??? WOAH!
+d3.select("#chart-select").on("change", function(e) {
+    const selected = e.target.value
 
+    if (select === "treemap") {
+        d3.select("#treemap").style("display", "block");
+        d3.select("#chord").style("display", "none");
+         d3.select("#sankey").style("display", "none");
+    } else if (selected === "chord") {
+        d3.select("#treemap").style("display", "none");
+        d3.select("#chord").style("display", "block");
+         d3.select("#sankey").style("display", "none");
+    } else if (selected === "sankey") {
+        d3.select("#treemap").style("display", "none");
+        d3.select("#chord").style("display", "none");
+        d3.select("#sankey").style("display", "block");
+    }
+})
 
 
 // CLASS ACTIVITY!!! (These generally get a little harder as you go down the list)
