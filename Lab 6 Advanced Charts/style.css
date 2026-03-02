@@ -27,13 +27,20 @@ h1 {
 
 #chart-select {
     margin-bottom: 10px;
-    font-size: 1rem;
+    font-size: 1.5rem;
     border: 1px solid rgb(208, 208, 208);
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
 }
 
+/* Makes the treemap the default viz and displays it */
 #treemap {
-    /* display: none; */
+    display: block;
+}
+
+/* Hides the other two diagrams at the start */
+#chord,
+#sankey {
+    display: none;
 }

@@ -10,12 +10,13 @@
         <div>
             <div id="chart-container">
                 <h1>GT Colleges and Majors</h1>
-                </select>
+                <!-- Another select element! Let the user choose which visualization to view -->
                 <select id="chart-select">
                     <option value="treemap" selected>Student Majors Breakdown</option>
-                    <option value="chord" selected>Major Transfers</option>
-                    <option value="sankey" selected>College Transfers</option>
+                    <option value="chord">Major Transfers</option>
+                    <option value="sankey">College Transfers</option>
                 </select>
+                <!-- Reminder that our CSS ensures that only the treemap div is visible by default! -->
                 <div id="treemap"></div>
                 <div id="chord"></div>
                 <div id="sankey"></div>
@@ -29,4 +30,4 @@
         <script src="sankey.js"></script>
         <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
     </body>
-</html> 
+</html>
