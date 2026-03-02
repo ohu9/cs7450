@@ -3,28 +3,31 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Lab 6 Demo</title>
+        <title>Homework 2</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div>
             <div id="chart-container">
-                <h1>GT Colleges and Majors</h1>
+                <h1>EV Charging Station Data</h1>
                 <select id="chart-select">
-                    <option value="treemap" selected>Student Majors Breakdown</option>
-                    <option value="chord">Major Transfers</option>
-                    <option value="sankey">College Transfers</option>
+                    <option value="barchart" selected>Average Windspeed</option>
+                    <option value="scatterplot">Distance vs. Usage</option>
+                    <option value="linechart">Station Installation Trends</option>
+                    <option value="piechart">Operator Market Share</option>
                 </select>
-                <div id="treemap"></div>
-                <div id="chord"></div>
-                <div id="sankey"></div>
+                <div id="barchart"></div>
+                <div id="scatterplot"></div>
+                <div id="linechart"></div>
+                <div id="piechart"></div>
             </div>
         </div>
         <script src="https://d3js.org/d3.v7.min.js"></script>
-        <script src="script.js"></script>
-        <script src="treemap.js"></script>
-        <script src="chord.js"></script>
-        <script src="sankey.js"></script>
+        <script src="scripts/script.js"></script>
+        <script src="scripts/barchart.js"></script>
+        <script src="scripts/scatterplot.js"></script>
+        <script src="scripts/linechart.js"></script>
+        <script src="scripts/piechart.js"></script>
         <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
     </body>
 </html>
