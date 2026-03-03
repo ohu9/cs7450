@@ -3,25 +3,17 @@
 d3.select("#chart-select").on("change", function(e) {
     const selected = e.target.value;
 
-    if (selected === "barchart") {
-        d3.select("#barchart").style("display", "block");
-        d3.select("#scatterplot").style("display", "none");
-        d3.select("#linechart").style("display", "none");
-        d3.select("#piechart").style("display", "none");
-    } else if (selected === "scatterplot") {
-        d3.select("#barchart").style("display", "none");
-        d3.select("#scatterplot").style("display", "block");
-        d3.select("#linechart").style("display", "none");
-        d3.select("#piechart").style("display", "none");
-    } else if (selected === "linechart") {
-        d3.select("#barchart").style("display", "none");
-        d3.select("#scatterplot").style("display", "none");
-        d3.select("#linechart").style("display", "block");
-        d3.select("#piechart").style("display", "none");
-    } else if (selected === "piechart") {
-        d3.select("#barchart").style("display", "none");
-        d3.select("#scatterplot").style("display", "none");
-        d3.select("#linechart").style("display", "none");
-        d3.select("#piechart").style("display", "block");
+    if (selected === "treemap") {
+        d3.select("#treemap").style("display", "block");
+        d3.select("#chord").style("display", "none");
+        d3.select("#sankey").style("display", "none");
+    } else if (selected === "chord") {
+        d3.select("#treemap").style("display", "none");
+        d3.select("#chord").style("display", "block");
+        d3.select("#sankey").style("display", "none");
+    } else if (selected === "sankey") {
+        d3.select("#treemap").style("display", "none");
+        d3.select("#chord").style("display", "none");
+        d3.select("#sankey").style("display", "block");
     }
 });
