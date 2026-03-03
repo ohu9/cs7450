@@ -3,17 +3,62 @@
 d3.select("#chart-select").on("change", function(e) {
     const selected = e.target.value;
 
-    if (selected === "treemap") {
-        d3.select("#treemap").style("display", "block");
-        d3.select("#chord").style("display", "none");
-        d3.select("#sankey").style("display", "none");
-    } else if (selected === "chord") {
-        d3.select("#treemap").style("display", "none");
-        d3.select("#chord").style("display", "block");
-        d3.select("#sankey").style("display", "none");
-    } else if (selected === "sankey") {
-        d3.select("#treemap").style("display", "none");
-        d3.select("#chord").style("display", "none");
-        d3.select("#sankey").style("display", "block");
+    if (selected === "barchart") {
+        d3.select("#barchart").style("display", "block");
+        d3.select("#scatterplot").style("display", "none");
+        d3.select("#linechart").style("display", "none");
+        d3.select("#piechart").style("display", "none");
+    } else if (selected === "scatterplot") {
+        d3.select("#barchart").style("display", "none");
+        d3.select("#scatterplot").style("display", "block");
+        d3.select("#linechart").style("display", "none");
+        d3.select("#piechart").style("display", "none");
+    } else if (selected === "linechart") {
+        d3.select("#barchart").style("display", "none");
+        d3.select("#scatterplot").style("display", "none");
+        d3.select("#linechart").style("display", "block");
+        d3.select("#piechart").style("display", "none");
+    } else if (selected === "piechart") {
+        d3.select("#barchart").style("display", "none");
+        d3.select("#scatterplot").style("display", "none");
+        d3.select("#linechart").style("display", "none");
+        d3.select("#piechart").style("display", "block");
     }
 });
+
+// Define data cleaning function for all charts
+export const cleanWeatherData = (data) => {
+	return {
+		date: d3.timeParse("%m/%d/%Y")(data.Date),
+		weather: data.Weather,
+		precip: data.Precip ? +data.Precip : 0,
+		Pressure: +data.Pressure,
+		visibility: +data.Visibility,
+		windspeed: +data.Windspeed,
+		maxspeed: +data.MaxSpeed,
+		tempmax: +data.TempMax,
+		tempmin: +data.TempMin
+	}
+}
+
+// Define margin and dimensions for all charts
+export const margin = { top: 20, right: 20, bottom: 100, left: 70 };
+export const dimensions = { 
+    outerWidth: 500, 
+    outerHeight: 500, 
+    width: outerWidth - margin.left - margin.right, 
+    height: outerHeight - margin.top - margin.bottom 
+};
+
+// Define tooltip for all charts
+export const tooltip = d3.select("body").append("div")
+	.attr("class", "tooltip")
+	.style("position", "absolute")
+	.style("background", "white")
+	.style("border", "1px solid #ddd")
+	.style("border-radius", "4px")
+	.style("padding", "8px")
+	.style("font-size", "14px")
+	.style("opacity", 0)
+	.style("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
+
