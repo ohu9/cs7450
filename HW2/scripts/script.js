@@ -7,22 +7,22 @@ d3.select("#chart-select").on("change", function(e) {
         d3.select("#barchart").style("display", "block");
         d3.select("#scatterplot").style("display", "none");
         d3.select("#linechart").style("display", "none");
-        d3.select("#piechart").style("display", "none");
+        d3.select("#heatmap").style("display", "none");
     } else if (selected === "scatterplot") {
         d3.select("#barchart").style("display", "none");
         d3.select("#scatterplot").style("display", "block");
         d3.select("#linechart").style("display", "none");
-        d3.select("#piechart").style("display", "none");
+        d3.select("#heatmap").style("display", "none");
     } else if (selected === "linechart") {
         d3.select("#barchart").style("display", "none");
         d3.select("#scatterplot").style("display", "none");
         d3.select("#linechart").style("display", "block");
-        d3.select("#piechart").style("display", "none");
-    } else if (selected === "piechart") {
+        d3.select("#heatmap").style("display", "none");
+    } else if (selected === "heatmap") {
         d3.select("#barchart").style("display", "none");
         d3.select("#scatterplot").style("display", "none");
         d3.select("#linechart").style("display", "none");
-        d3.select("#piechart").style("display", "block");
+        d3.select("#heatmap").style("display", "block");
     }
 });
 

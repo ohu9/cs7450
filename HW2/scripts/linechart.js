@@ -123,8 +123,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 			maxFocus.attr("transform", `translate(${date(d.date)},${temp(d.tempmax)})`);
 			minFocus.attr("transform", `translate(${date(d.date)},${temp(d.tempmin)})`);
 
-			const formatMonthDay = d3.timeFormat("%b %d");
-			tooltip.html(`<b>Date:</b> ${formatMonthDay(d.date)}<br/><b>Max Temp:</b> ${d.tempmax.toFixed(2)}<br/><b>Min Temp:</b> ${d.tempmin.toFixed(2)}`)
+			tooltip.html(`<b>Date:</b> ${d3.timeFormat("%b %d")(d.date)}<br/><b>Max Temp:</b> ${d.tempmax.toFixed(2)}<br/><b>Min Temp:</b> ${d.tempmin.toFixed(2)}`)
 				.style("left", (event.pageX + 10) + "px")
 				.style("top", (event.pageY - 28) + "px");
 		});
