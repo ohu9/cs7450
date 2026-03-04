@@ -34,10 +34,10 @@ h1 {
     text-align: center;
 }
 
-/* #scatterplot {
+#piechart {
     display: block;
 }
 
-#scatterplot, #linechart, #piechart {
+#barchart, #scatterplot, #linechart {
     display: none;
-} */
+}

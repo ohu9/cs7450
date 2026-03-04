@@ -1,4 +1,4 @@
-import { cleanWeatherData, margin, dimensions, tooltip } from "../scripts/script.js";
+import { cleanWeatherData, tooltip } from "../scripts/script.js";
 
 const barMargin = { top: 20, right: 20, bottom: 80, left: 70 };
 const barOuterWidth = 500;

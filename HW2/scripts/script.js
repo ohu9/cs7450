@@ -41,15 +41,6 @@ export const cleanWeatherData = (data) => {
 	}
 }
 
-// Define margin and dimensions for all charts
-export const margin = { top: 20, right: 20, bottom: 100, left: 70 };
-export const dimensions = { 
-    outerWidth: 500, 
-    outerHeight: 500, 
-    width: outerWidth - margin.left - margin.right, 
-    height: outerHeight - margin.top - margin.bottom 
-};
-
 // Define tooltip for all charts
 export const tooltip = d3.select("body").append("div")
 	.attr("class", "tooltip")
