@@ -32,7 +32,7 @@ export const cleanWeatherData = (data) => {
 		date: d3.timeParse("%m/%d/%Y")(data.Date),
 		weather: data.Weather,
 		precip: data.Precip ? +data.Precip : 0,
-		Pressure: +data.Pressure,
+		pressure: +data.Pressure,
 		visibility: +data.Visibility,
 		windspeed: +data.Windspeed,
 		maxspeed: +data.MaxSpeed,

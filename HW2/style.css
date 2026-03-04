@@ -34,10 +34,10 @@ h1 {
     text-align: center;
 }
 
-#heatmap {
+#barchart {
     display: block;
 }
 
-#barchart, #scatterplot, #linechart {
+#heatmap, #scatterplot, #linechart {
     display: none;
 }

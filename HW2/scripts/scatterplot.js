@@ -43,12 +43,16 @@ const tooltip = d3.select("body").append("div")
 d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 
 	const x = d3.scaleLinear()
-		.domain(d3.extent(data, d => d.tempmax))
+		.domain(d3.extent(data, d => d.dewpoint))
 		.range([0, width]);
 
 	const y = d3.scaleLinear()
-		.domain(d3.extent(data, d => d.dewpoint))
+		.domain(d3.extent(data, d => d.tempmax))
 		.range([height, 0]);
+	
+	const color = d3.scaleSequential()
+        .domain([d3.min(data, d => d.tempmax), d3.max(data, d => d.tempmax)])
+        .interpolator(d3.interpolateInferno);
 
 	scatterG.append("g")
 		.attr("transform", `translate(0, ${height})`)
@@ -61,11 +65,11 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
         .data(data)
         .enter()
         .append("circle")
-        .attr("cx", d => x(d.tempmax))
-        .attr("cy", d => y(d.dewpoint))
+        .attr("cx", d => x(d.dewpoint))
+        .attr("cy", d => y(d.tempmax))
         .attr("r", 5)
-        .attr("fill", d => d.weather === "sun" ? "#e39a42" : "#487edb")
-        .style("opacity", 0.7);
+        .attr("fill", d => d.weather === "sun" ? "#ff9742" : "#487edb")
+        .style("opacity", 0.6);
 	
     // labels
 	scatterG.append("text")
@@ -73,7 +77,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 		.attr("text-anchor", "middle")
 		.attr("x", width / 2)
 		.attr("y", height + margin.bottom - 20)
-		.text("Max Temperature");
+		.text("Dewpoint");
 
 	scatterG.append("text")
 		.attr("class", "y axis-label")
@@ -81,7 +85,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 		.attr("transform", "rotate(-90)")
 		.attr("x", -height / 2)
 		.attr("y", -margin.left + 30)
-		.text("Dewpoint");
+		.text("Max Temperature");
 
 	// interaction
 	circles.on("mouseover", (event, d) => {
@@ -119,7 +123,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 
 	// add legend
 	const legendGroups = scatterG.selectAll(".legend")
-		.data([{label: "Sun", color: "#e39a42"}, {label: "Other", color: "#487edb"}])
+		.data([{label: "Sun", color: "#ff9742"}, {label: "Other", color: "#487edb"}])
 		.enter()
 		.append("g")
 		.attr("class", "legend")

@@ -54,7 +54,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
     lineG.append("path")
         .attr("d", maxLine(groupedData))
         .attr("fill", "none")
-        .attr("stroke", "#e39a42")
+        .attr("stroke", "#ff9742")
         .attr("stroke-width", 2);
 
     const minLine = d3.line()
@@ -127,4 +127,26 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 				.style("left", (event.pageX + 10) + "px")
 				.style("top", (event.pageY - 28) + "px");
 		});
+	
+	// add legend
+	const legendGroups = lineG.selectAll(".legend")
+		.data([{label: "Max Temp", color: "#ff9742"}, {label: "Min Temp", color: "#487edb"}])
+		.enter()
+		.append("g")
+		.attr("class", "legend")
+		.attr("transform", (d, i) => `translate(${lineWidth - 80}, ${i * 20})`);
+
+	legendGroups.append("rect")
+		.attr("x", 0)
+		.attr("width", 12)
+		.attr("height", 12)
+		.style("fill", d => d.color);
+
+	legendGroups.append("text")
+		.attr("x", 20)
+		.attr("y", 6)
+		.attr("dy", ".35em")
+		.style("text-anchor", "start")
+		.style("font-size", "14px")
+		.text(d => d.label);
 });

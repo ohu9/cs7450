@@ -16,7 +16,7 @@ const barG = barSvg.append("g")
 	.attr("transform", `translate(${barMargin.left}, ${barMargin.top})`);
 
 d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
-    const groupedData = d3.rollup(data, v => d3.mean(v, d => d.windspeed), d => d.weather);
+    const groupedData = d3.rollup(data, v => d3.mean(v, d => d.precip), d => d.weather);
 
 	const x = d3.scaleBand()
 		.domain(groupedData.keys())
@@ -35,18 +35,15 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 		.attr("y", d => y(d[1]))
 		.attr("width", x.bandwidth())
 		.attr("height", d => barHeight - y(d[1]))
-		.style("fill", "#5aaee6")
-		.style("opacity", 0.8);
+		.style("fill", "#487edb")
+		.style("opacity", 0.9);
 
 	// axes
 	barG.append("g")
 		.attr("transform", `translate(0, ${barHeight})`)
 		.call(d3.axisBottom(x))
 		.selectAll("text")
-		.attr("transform", "rotate(-45)")
-		.style("text-anchor", "end")
-		.attr("dx", "-.8em")
-		.attr("dy", ".15em");
+		.style("font-size", "1rem");
 
 	barG.append("g")
 		.call(d3.axisLeft(y));
