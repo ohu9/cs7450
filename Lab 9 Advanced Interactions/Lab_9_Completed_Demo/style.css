@@ -1,0 +1,102 @@
+/* CHEESE STYLE!!! */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff9e6; 
+    color: #5d4037; 
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    width: 100%;
+    background: #f1c40f; 
+    color: #5d4037;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-bottom: 5px solid #d4ac0d;
+}
+
+.header h1 {
+    margin: 0;
+    font-variant: small-caps;
+    letter-spacing: 2px;
+}
+
+.toolbar {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.instruction {
+    font-size: 0.85rem;
+    color: #7d6608;
+    margin-left: 10px;
+}
+
+#layout {
+    display: flex;
+    gap: 25px;
+    padding: 40px;
+    justify-content: center;
+}
+
+.chart-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 15px;
+    border: 3px solid #f1c40f;
+}
+
+h3 {
+    margin-top: 0;
+    color: #d35400;
+    border-bottom: 2px dashed #f1c40f;
+    padding-bottom: 10px;
+}
+
+button {
+    background: #e67e22; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0 15px 15px 0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+svg {
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+circle {
+    stroke: #f1c40f;
+    stroke-width: 1px;
+}
+
+.brush .selection {
+    fill: #f1c40f;
+    fill-opacity: 0.4;
+    stroke: #d35400;
+    stroke-width: 2px;
+    stroke-dasharray: 5,5;
+}
+
+.selected {
+    fill: #e67e22 !important;
+    opacity: 1 !important;
+}
+
+.bar {
+    fill: #f39c12;
+    stroke-width: 1px;
+}
+
+text {
+    font-weight: bold;
+    fill: #5d4037;
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <!-- Header information -->
+    <div class="header">
+        <!-- You need to tell your users what the dashboard is for -->
+        <h1>Does cheese make you live longer?</h1>
+        <div class="toolbar">
+            <!-- It's not easy to return charts back to exactly 1x and 0,0 position, a button improves users' quality of life! -->
+            <button id="reset-zoom">Reset Scatter View</button>
+            <!-- Instructions are important, without them, your users might just think your charts suck -->
+            <span class="instruction">Scroll to Zoom | Drag to Brush | Link to Bars</span>
+        </div>
+    </div class="header">
+    <!-- Main part of the dashboard -->
+    <main id="layout">
+        <!-- First chart -->
+        <div class="chart-card">
+            <!-- Chart titles are important! Tell users what your chart is about! -->
+            <h3>Cheese Consumption vs. Life Expectancy</h3>
+            <svg id="scatterplot"></svg>
+        </div>
+        <!-- Second chart -->
+        <div class="chart-card">
+            <!-- Chart titles are important! Tell users what your chart is about! -->
+            <h3>GDP By Country</h3>
+            <svg id="barchart"></svg>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
