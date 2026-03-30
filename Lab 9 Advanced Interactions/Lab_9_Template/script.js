@@ -22,8 +22,85 @@ const svgBar = d3.select("#barchart")
     .append("g")
     .attr("transform", `translate(${margin.left + 30},${margin.top})`);
 
+    svgScatter.append("defs").append("clipPath")
+        .attr("id", "chart-clip")
+        .append("rect")
+        .attr("x", 1)
+        .attr("y", 0)
+        .attr("width", width - 1)
+        .attr("height", height - 1);
+    
 
 // Time to load our data! (Yes I did make it up)
 d3.csv("countries.csv").then(data => {
+    data.forEach(d => {
+        d.cheese_consumption = +d.cheese_consumption;
+        d.life_exp = +d.life_exp;
+    });
+
+    const xScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.cheese_consumption) * 1.1])
+        .range([0, width]);
     
+    const yScale = d3.scaleLinear()
+        .domain([50, 95])
+        .range([height, 0]);
+    
+    const xAxisG = svgScatter.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale));
+    
+    const yAxisG = svgScatter.append("g")
+        .call(d3.axisLeft(yScale));
+    
+    svgScatter.append("text")
+        .attr("x", width / 2)
+        .attr("y", height + 95)
+        .attr("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .text("Annual Cheese Consumption (kg)");
+    
+    svgScatter.append("text")
+        .attr("transform", "roate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -60)
+        .attr("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .text("Life Expectancy (Years)");
+
+    const circle = svgScatter.append("g")
+        .attr("clip=path", "url(#chart-clip")
+        .selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xScale(d.cheese_consumption))
+        .attr("cy", d => yScale(d.life_exp))
+        .attr("r", 0)
+        .attr("fill", "none")
+        .attr("opacity", 0.7);
+    
+    circles.transition()
+        .duration(1000)
+        .delay((d,i) => i * 20)
+        .attr("r", 6);
+    
+    const xBar = d3.scaleBand()
+        .range([0, width])
+        .padding(0.2);
+    
+    const yBar = d3.scaleLinear()
+        .range([height, 0]);
+    
+    const xAxisBar = svgBar.append("g")
+        .attr("transform", `translate(0,${height})`)
+    
+    const yAxisBar = svgBar.append("g");
+
+    svgBar.append("text")
+        .attr("x", width / 2)
+        .attr("y", height + 90)
+        .attr("text-anchor", "middle")
+        .str("font-weight", "bold")
+        .text("Selected Countries");
 });
