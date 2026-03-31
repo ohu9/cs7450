@@ -3,23 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Homework 2</title>
+        <title>Homework 3</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div>
             <div id="chart-container">
                 <h1>Atlanta Weather Data (2020-2022)</h1>
-                <select id="chart-select">
-                    <option value="barchart" selected>Average Precipitation</option>
-                    <option value="scatterplot">Max Temp vs. Dewpoint</option>
-                    <option value="linechart">Temperature Trends</option>
-                    <option value="heatmap">Calendar Heatmap</option>
-                </select>
-                <div id="barchart"></div>
-                <div id="scatterplot"></div>
-                <div id="linechart"></div>
-                <div id="heatmap"></div>
+                <div id="charts-grid">
+                    <div id="barchart"></div>
+                    <div id="linechart"></div>
+                    <div id="scatterplot"></div>
+                    <div id="heatmap"></div>
+                </div>
             </div>
         </div>
         <script src="https://d3js.org/d3.v7.min.js"></script>

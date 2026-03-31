@@ -1,31 +1,3 @@
-// Main control file for controlling which chart is displayed. This is only activated when the dropdown
-// menu is changed, and makes it seem like the charts are swapping in and out
-d3.select("#chart-select").on("change", function(e) {
-    const selected = e.target.value;
-
-    if (selected === "barchart") {
-        d3.select("#barchart").style("display", "block");
-        d3.select("#scatterplot").style("display", "none");
-        d3.select("#linechart").style("display", "none");
-        d3.select("#heatmap").style("display", "none");
-    } else if (selected === "scatterplot") {
-        d3.select("#barchart").style("display", "none");
-        d3.select("#scatterplot").style("display", "block");
-        d3.select("#linechart").style("display", "none");
-        d3.select("#heatmap").style("display", "none");
-    } else if (selected === "linechart") {
-        d3.select("#barchart").style("display", "none");
-        d3.select("#scatterplot").style("display", "none");
-        d3.select("#linechart").style("display", "block");
-        d3.select("#heatmap").style("display", "none");
-    } else if (selected === "heatmap") {
-        d3.select("#barchart").style("display", "none");
-        d3.select("#scatterplot").style("display", "none");
-        d3.select("#linechart").style("display", "none");
-        d3.select("#heatmap").style("display", "block");
-    }
-});
-
 // Define data cleaning function for all charts
 export const cleanWeatherData = (data) => {
 	return {
@@ -53,3 +25,5 @@ export const tooltip = d3.select("body").append("div")
 	.style("opacity", 0)
 	.style("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
 
+export const getMonthDay = (date) => `${date.getMonth()}-${date.getDate()}`;
+export const dispatch = d3.dispatch("filterByDate");

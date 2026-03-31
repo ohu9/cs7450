@@ -1,9 +1,9 @@
-import { cleanWeatherData, tooltip } from "./script.js";
+import { cleanWeatherData, tooltip, dispatch, getMonthDay } from "./script.js";
 
 // MARGIN CONVENTIONS
 const heatmapMargin = { top: 20, right: 20, bottom: 50, left: 60 };
 const heatmapOuterWidth = 1200;
-const heatmapOuterHeight = 400;
+const heatmapOuterHeight = 500;
 const heatmapWidth = heatmapOuterWidth - heatmapMargin.left - heatmapMargin.right;
 const heatmapHeight = heatmapOuterHeight - heatmapMargin.top - heatmapMargin.bottom;
 
@@ -99,15 +99,67 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
         .style("font-size", "12px");
 
     // interaction
-    boxes.on("mouseover", (event, d) => {
-        tooltip.transition().duration(200).style("opacity", 0.9);
-    })
-    .on("mousemove", (event, d) => {
-        tooltip.html(`<b>Date:</b> ${d.label_date}<br/><b>Max Temp:</b> ${d.tempmax.toFixed(2)}`)  
-            .style("left", (event.pageX + 10) + "px")
-            .style("top", (event.pageY - 28) + "px");
-    })
-    .on("mouseout", () => {
-        tooltip.transition().duration(500).style("opacity", 0);
+    const brush = d3.brush()
+        .extent([[0, 0], [heatmapWidth, heatmapHeight]])
+        .on("brush end", brushed);
+
+    heatmapG.append("g")
+        .attr("class", "brush")
+        .call(brush);
+
+    function brushed(event) {
+        if (!event.sourceEvent) return;
+        
+        if (!event.selection) {
+            boxes.style("opacity", 1);
+            dispatch.call("filterByDate", this, null, "heatmap");
+            return;
+        }
+        
+        const [[x0, y0], [x1, y1]] = event.selection;
+        const selectedMd = new Set();
+        
+        boxes.style("opacity", function(d) {
+            const bx = x(d.week_number);
+            const by = y(d.weekday);
+            const cx = bx + x.bandwidth()/2;
+            const cy = by + y.bandwidth()/2;
+            const isInside = cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
+            if (isInside) selectedMd.add(getMonthDay(d.date));
+            return isInside ? 1 : 0.2;
+        });
+        
+        dispatch.call("filterByDate", this, selectedMd, "heatmap");
+    }
+
+    dispatch.on("filterByDate.heatmap", function(selectedMd, source) {
+        if (source === "heatmap") return;
+        heatmapG.select(".brush").call(brush.move, null);
+        if (!selectedMd) {
+            boxes.style("opacity", 1);
+        } else {
+            boxes.style("opacity", d => selectedMd.has(getMonthDay(d.date)) ? 1 : 0.2);
+        }
     });
+
+    heatmapG.on("mousemove", (event) => {
+        const [mx, my] = d3.pointer(event);
+        let hovered = null;
+        for (let d of groupedData) {
+            const bx = x(d.week_number);
+            const by = y(d.weekday);
+            if (mx >= bx && mx <= bx + x.bandwidth() && my >= by && my <= by + y.bandwidth()) {
+                hovered = d;
+                break;
+            }
+        }
+        if (hovered) {
+             tooltip.style("opacity", 0.9)
+                .html(`<b>Date:</b> ${hovered.label_date}<br/><b>Max Temp:</b> ${hovered.tempmax.toFixed(2)}`)  
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        } else {
+             tooltip.style("opacity", 0);
+        }
+    }).on("mouseleave", () => tooltip.style("opacity", 0));
 });

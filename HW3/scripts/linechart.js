@@ -2,8 +2,8 @@ import { cleanWeatherData, tooltip } from "../scripts/script.js";
 
 // MARGIN CONVENTIONS
 const lineMargin = { top: 20, right: 20, bottom: 70, left: 70 };
-const lineOuterWidth = 1000;
-const lineOuterHeight = 520;
+const lineOuterWidth = 1200;
+const lineOuterHeight = 500;
 const lineWidth = lineOuterWidth - lineMargin.left - lineMargin.right;
 const lineHeight = lineOuterHeight - lineMargin.top - lineMargin.bottom;
 

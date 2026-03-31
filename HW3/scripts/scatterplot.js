@@ -1,7 +1,9 @@
+import { dispatch, getMonthDay } from "./script.js";
+
 // MARGIN CONVENTIONS
 const margin = { top: 20, right: 20, bottom: 70, left: 70 };
-const outerWidth = 700;
-const outerHeight = 520;
+const outerWidth = 600;
+const outerHeight = 500;
 const width = outerWidth - margin.left - margin.right;
 const height = outerHeight - margin.top - margin.bottom;
 
@@ -42,84 +44,144 @@ const tooltip = d3.select("body").append("div")
 
 d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 
-	const x = d3.scaleLinear()
-		.domain(d3.extent(data, d => d.dewpoint))
-		.range([0, width]);
+    scatterContainer.style("position", "relative");
 
-	const y = d3.scaleLinear()
-		.domain(d3.extent(data, d => d.tempmax))
-		.range([height, 0]);
-	
-	const color = d3.scaleSequential()
-        .domain([d3.min(data, d => d.tempmax), d3.max(data, d => d.tempmax)])
-        .interpolator(d3.interpolateInferno);
+    // axis labels are select buttons
+    const xSelect = scatterContainer.append("select")
+        .attr("id", "scatter-x")
+        .style("position", "absolute")
+        .style("left", `${margin.left + width / 2}px`)
+        .style("bottom", "10px")
+        .style("transform", "translateX(-50%)")
+        .style("font-size", "14px")
+        .style("padding", "4px");
 
-	scatterG.append("g")
-		.attr("transform", `translate(0, ${height})`)
-		.call(d3.axisBottom(x));
+    const ySelect = scatterContainer.append("select")
+        .attr("id", "scatter-y")
+        .style("position", "absolute")
+        .style("left", "-20px")
+        .style("top", `${margin.top + height / 2}px`)
+        .style("transform", "rotate(-90deg)")
+        .style("font-size", "14px")
+        .style("padding", "4px");
 
-	scatterG.append("g")
-		.call(d3.axisLeft(y));
+    const attributes = [
+        {value: "tempmax", text: "Max Temperature"},
+        {value: "tempmin", text: "Min Temperature"},
+        {value: "dewpoint", text: "Dewpoint"},
+        {value: "precip", text: "Precipitation"},
+        {value: "Pressure", text: "Pressure"},
+        {value: "visibility", text: "Visibility"},
+        {value: "windspeed", text: "Windspeed"},
+        {value: "maxspeed", text: "Max Speed"}
+    ];
+
+    xSelect.selectAll("option")
+        .data(attributes)
+        .enter()
+        .append("option")
+        .attr("value", d => d.value)
+        .text(d => d.text);
+        
+    ySelect.selectAll("option")
+        .data(attributes)
+        .enter()
+        .append("option")
+        .attr("value", d => d.value)
+        .text(d => d.text);
+
+    // initialize as tempmax vs dewpoint
+    let currentX = "tempmax";
+    let currentY = "dewpoint";
+    xSelect.property("value", currentX);
+    ySelect.property("value", currentY);
+
+	const x = d3.scaleLinear().range([0, width]);
+	const y = d3.scaleLinear().range([height, 0]);
+
+	const xAxisG = scatterG.append("g")
+		.attr("transform", `translate(0, ${height})`);
+
+	const yAxisG = scatterG.append("g");
     
     const circles = scatterG.selectAll("circle")
         .data(data)
         .enter()
         .append("circle")
-        .attr("cx", d => x(d.dewpoint))
-        .attr("cy", d => y(d.tempmax))
         .attr("r", 5)
         .attr("fill", d => d.weather === "sun" ? "#ff9742" : "#487edb")
         .style("opacity", 0.6);
-	
-    // labels
-	scatterG.append("text")
-		.attr("class", "x axis-label")
-		.attr("text-anchor", "middle")
-		.attr("x", width / 2)
-		.attr("y", height + margin.bottom - 20)
-		.text("Dewpoint");
-
-	scatterG.append("text")
-		.attr("class", "y axis-label")
-		.attr("text-anchor", "middle")
-		.attr("transform", "rotate(-90)")
-		.attr("x", -height / 2)
-		.attr("y", -margin.left + 30)
-		.text("Max Temperature");
 
 	// interaction
-	circles.on("mouseover", (event, d) => {
-		d3.select(event.currentTarget)
-			.transition()
-			.style("opacity", 1)
-			.attr("r", 7)
-			.duration(150);
-		
-		tooltip.transition()
-			.duration(200)
-			.style("opacity", 0.9);
-			
-		tooltip.html(`<b>Weather:</b> ${d.weather}<br/><b>Max Temp:</b> ${d.tempmax}<br/><b>Dewpoint:</b> ${d.dewpoint}`)
-			.style("left", (event.pageX + 10) + "px")
-			.style("top", (event.pageY - 28) + "px");
-	});
+    const brush = d3.brush()
+        .extent([[0, 0], [width, height]])
+        .on("brush end", brushed);
 
-	circles.on("mousemove", (event) => {
-		tooltip.style("left", (event.pageX + 10) + "px")
-			.style("top", (event.pageY - 28) + "px");
-	});
+    scatterG.append("g")
+        .attr("class", "brush")
+        .call(brush);
 
-	circles.on("mouseout", (event, d) => {
-		d3.select(event.currentTarget)
-			.transition()
-			.style("opacity", 0.7)
-			.attr("r", 5)
-			.duration(150);
-		
-		tooltip.transition()
-			.duration(500)
-			.style("opacity", 0);
-	});
+    function brushed(event) {
+        if (!event.sourceEvent) return;
+        
+        if (!event.selection) {
+            circles.style("opacity", 0.6).attr("r", 5);
+            dispatch.call("filterByDate", this, null, "scatter");
+            return;
+        }
+        
+        const [[x0, y0], [x1, y1]] = event.selection;
+        const selectedMd = new Set();
+        
+        circles.style("opacity", function(d) {
+            const cx = x(d[currentX]);
+            const cy = y(d[currentY]);
+            const isInside = cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
+            if (isInside) selectedMd.add(getMonthDay(d.date));
+            return isInside ? 1 : 0.1;
+        }).attr("r", d => {
+            const cx = x(d[currentX]);
+            const cy = y(d[currentY]);
+            const isInside = cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
+            return isInside ? 7 : 5;
+        });
+        
+        dispatch.call("filterByDate", this, selectedMd, "scatter");
+    }
+
+    dispatch.on("filterByDate.scatter", function(selectedMd, source) {
+        if (source === "scatter") return;
+        scatterG.select(".brush").call(brush.move, null);
+        if (!selectedMd) {
+            circles.style("opacity", 0.6).attr("r", 5);
+        } else {
+            circles.style("opacity", d => selectedMd.has(getMonthDay(d.date)) ? 1 : 0.1)
+                   .attr("r", d => selectedMd.has(getMonthDay(d.date)) ? 7 : 5);
+        }
+    });
+
+    scatterG.on("mousemove", (event) => {
+        const [mx, my] = d3.pointer(event);
+        let hovered = null;
+        let minDist = 10;
+        for (let d of data) {
+            const cx = x(d[currentX]);
+            const cy = y(d[currentY]);
+            const dist = Math.hypot(cx - mx, cy - my);
+            if (dist < minDist) {
+                hovered = d;
+                minDist = dist;
+            }
+        }
+        if (hovered) {
+             tooltip.style("opacity", 0.9)
+                .html(`<b>Date:</b> ${d3.timeFormat("%B %d")(hovered.date)}<br/><b>Weather:</b> ${hovered.weather}<br/><b>${attributes.find(o=>o.value===currentX).text}:</b> ${hovered[currentX]}<br/><b>${attributes.find(o=>o.value===currentY).text}:</b> ${hovered[currentY]}`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        } else {
+             tooltip.style("opacity", 0);
+        }
+    }).on("mouseleave", () => tooltip.style("opacity", 0));
 
 	// add legend
 	const legendGroups = scatterG.selectAll(".legend")
@@ -143,4 +205,34 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 		.style("text-anchor", "start")
 		.style("font-size", "14px")
 		.text(d => d.label);
+
+    // update function to redraw on select change
+    function update() {
+        x.domain(d3.extent(data, d => d[currentX]));
+        y.domain(d3.extent(data, d => d[currentY]));
+
+        xAxisG.transition().duration(500).call(d3.axisBottom(x));
+        yAxisG.transition().duration(500).call(d3.axisLeft(y));
+
+
+
+        circles.transition().duration(500)
+            .attr("cx", d => x(d[currentX]))
+            .attr("cy", d => y(d[currentY]));
+            
+        scatterG.select(".brush").call(brush.move, null);
+    }
+
+    xSelect.on("change", function() {
+        currentX = this.value;
+        update();
+    });
+    
+    ySelect.on("change", function() {
+        currentY = this.value;
+        update();
+    });
+
+    // Initial draw
+    update();
 });

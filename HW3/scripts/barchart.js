@@ -1,7 +1,7 @@
 import { cleanWeatherData, tooltip } from "../scripts/script.js";
 
 const barMargin = { top: 20, right: 20, bottom: 80, left: 70 };
-const barOuterWidth = 500;
+const barOuterWidth = 600;
 const barOuterHeight = 500;	
 const barWidth = barOuterWidth - barMargin.left - barMargin.right;
 const barHeight = barOuterHeight - barMargin.top - barMargin.bottom;
