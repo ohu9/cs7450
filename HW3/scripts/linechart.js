@@ -1,4 +1,4 @@
-import { cleanWeatherData, tooltip } from "../scripts/script.js";
+import { cleanWeatherData, tooltip, dispatchLineHeatmap, getMonthDay } from "./script.js";
 
 // MARGIN CONVENTIONS
 const lineMargin = { top: 20, right: 20, bottom: 70, left: 70 };
@@ -54,7 +54,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
     lineG.append("path")
         .attr("d", maxLine(groupedData))
         .attr("fill", "none")
-        .attr("stroke", "#ff9742")
+        .attr("stroke", "#C71D12")
         .attr("stroke-width", 2);
 
     const minLine = d3.line()
@@ -63,7 +63,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
     lineG.append("path")
         .attr("d", minLine(groupedData))
         .attr("fill", "none")
-        .attr("stroke", "#487edb")
+        .attr("stroke", "#FDA673")
         .attr("stroke-width", 2);
 	
     // labels
@@ -92,25 +92,31 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 		
 	const minFocus = focusG.append("circle")
 		.attr("r", 5)
-		.attr("fill", "#487edb");
+		.attr("fill", "#FDA673");
 
     // use bisector to snap to the closest date to the left
 	const bisectDate = d3.bisector(d => d.date).left;
 
-	lineG.append("rect")
-		.attr("width", lineWidth)
-		.attr("height", lineHeight)
-		.style("fill", "none")
-		.style("pointer-events", "all")
-		.on("mouseover", () => {
+	// interaction - brush and linked tooltips
+    const brush = d3.brushX()
+        .extent([[0, 0], [lineWidth, lineHeight]])
+        .on("brush end", brushed);
+
+    const brushG = lineG.append("g")
+        .attr("class", "brush")
+        .call(brush);
+        
+    // attach tooltips to brush group to avoid event blocking
+	brushG
+		.on("mouseover.tooltip", () => {
 			focusG.style("display", null);
 			tooltip.transition().duration(200).style("opacity", 0.9);
 		})
-		.on("mouseout", () => {
+		.on("mouseout.tooltip", () => {
 			focusG.style("display", "none");
 			tooltip.transition().duration(500).style("opacity", 0);
 		})
-		.on("mousemove", (event) => {
+		.on("mousemove.tooltip", (event) => {
 			const x0 = date.invert(d3.pointer(event)[0]);
 			const i = bisectDate(groupedData, x0, 1);
 			const d0 = groupedData[i - 1];
@@ -127,10 +133,62 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
 				.style("left", (event.pageX + 10) + "px")
 				.style("top", (event.pageY - 28) + "px");
 		});
+
+    function brushed(event) {
+        if (!event.sourceEvent) return;
+        
+        if (!event.selection) {
+            dispatchLineHeatmap.call("filter", this, new Set(), "linechart");
+            lineG.selectAll(".point-highlight").remove();
+            return;
+        }
+        
+        const [x0, x1] = event.selection;
+        
+        const selected = groupedData.filter(d => {
+            const px = date(d.date);
+            return px >= x0 && px <= x1;
+        });
+        
+        const selectedMd = new Set(selected.map(d => getMonthDay(d.date)));
+        
+        dispatchLineHeatmap.call("filter", this, selectedMd, "linechart");
+    }
+
+    dispatchLineHeatmap.on("filter.linechart", function(selectedMd, source) {
+        if (source === "linechart") return;
+        lineG.select(".brush").call(brush.move, null);
+        
+        lineG.selectAll(".point-highlight").remove();
+        
+        if (selectedMd) {
+            const highlightData = groupedData.filter(d => selectedMd.has(getMonthDay(d.date)));
+            
+            lineG.selectAll(".point-highlight-max")
+                .data(highlightData)
+                .enter().append("circle")
+                .attr("class", "point-highlight point-highlight-max")
+                .attr("cx", d => date(d.date))
+                .attr("cy", d => temp(d.tempmax))
+                .attr("r", 4)
+                .attr("fill", "#C71D12")
+                .style("pointer-events", "none");
+                
+            lineG.selectAll(".point-highlight-min")
+                .data(highlightData)
+                .enter().append("circle")
+                .attr("class", "point-highlight point-highlight-min")
+                .attr("cx", d => date(d.date))
+                .attr("cy", d => temp(d.tempmin))
+                .attr("r", 4)
+                .attr("fill", "#FDA673")
+                .style("pointer-events", "none");
+        }
+    });
 	
 	// add legend
 	const legendGroups = lineG.selectAll(".legend")
-		.data([{label: "Max Temp", color: "#ff9742"}, {label: "Min Temp", color: "#487edb"}])
+		.data([{label: "Max Temp", color: "#C71D12"}, {label: "Min Temp", color: "#FDA673"}])
 		.enter()
 		.append("g")
 		.attr("class", "legend")

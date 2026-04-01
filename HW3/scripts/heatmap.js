@@ -1,7 +1,7 @@
-import { cleanWeatherData, tooltip, dispatch, getMonthDay } from "./script.js";
+import { cleanWeatherData, tooltip, dispatchLineHeatmap, getMonthDay } from "./script.js";
 
 // MARGIN CONVENTIONS
-const heatmapMargin = { top: 20, right: 20, bottom: 50, left: 60 };
+const heatmapMargin = { top: 20, right: 20, bottom: 85, left: 60 };
 const heatmapOuterWidth = 1200;
 const heatmapOuterHeight = 500;
 const heatmapWidth = heatmapOuterWidth - heatmapMargin.left - heatmapMargin.right;
@@ -59,6 +59,47 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
         .attr("height", y.bandwidth())
         .attr("fill", d => color(d.tempmax));
 
+    // legend
+    const minTemp = d3.min(groupedData, d => d.tempmax);
+    const maxTemp = d3.max(groupedData, d => d.tempmax);
+
+    const defs = heatmapSvg.append("defs");
+    const linearGradient = defs.append("linearGradient")
+        .attr("id", "linear-gradient");
+        
+    linearGradient.selectAll("stop")
+        .data(d3.range(0, 1.01, 0.1))
+        .enter().append("stop")
+        .attr("offset", d => `${d * 100}%`)
+        .attr("stop-color", d => color(minTemp + d * (maxTemp - minTemp)));
+
+    const legendWidth = 150;
+    const legendHeight = 12;
+    const legendG = heatmapSvg.append("g")
+        .attr("transform", `translate(${heatmapMargin.left + heatmapWidth / 2 - legendWidth / 2 + 450}, ${heatmapMargin.top + heatmapHeight + 40})`);
+
+    legendG.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", "url(#linear-gradient)");
+
+    const legendScale = d3.scaleLinear()
+        .domain([minTemp, maxTemp])
+        .range([0, legendWidth]);
+
+    legendG.append("g")
+        .attr("transform", `translate(0, ${legendHeight})`)
+        .call(d3.axisBottom(legendScale).ticks(6))
+        .select(".domain").remove(); 
+
+    legendG.append("text")
+        .attr("x", legendWidth / 2)
+        .attr("y", -5)
+        .style("text-anchor", "middle")
+        .style("font-size", "12px")
+        .style("font-weight", "600")
+        .text("Max Temp °F");
+
     // axes
     heatmapG.append("g")
         .attr("transform", `translate(0, ${heatmapHeight})`)
@@ -85,9 +126,9 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
         .attr("class", "x axis-label")
         .attr("text-anchor", "middle")
         .attr("x", heatmapWidth / 2)
-        .attr("y", heatmapHeight + heatmapMargin.bottom - 15)
+        .attr("y", heatmapHeight + heatmapMargin.bottom - 30)
         .text("Week number")
-        .style("font-size", "12px");
+        .style("font-size", "14px");
 
     heatmapG.append("text")
         .attr("class", "y axis-label")
@@ -96,7 +137,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
         .attr("x", -heatmapHeight / 2)
         .attr("y", -heatmapMargin.left + 35)
         .text("Week Day")
-        .style("font-size", "12px");
+        .style("font-size", "14px");
 
     // interaction
     const brush = d3.brush()
@@ -111,31 +152,33 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
         if (!event.sourceEvent) return;
         
         if (!event.selection) {
-            boxes.style("opacity", 1);
-            dispatch.call("filterByDate", this, null, "heatmap");
+            boxes.style("opacity", 1); // Source resets to full view
+            dispatchLineHeatmap.call("filter", this, new Set(), "heatmap"); // Target hides
             return;
         }
         
         const [[x0, y0], [x1, y1]] = event.selection;
-        const selectedMd = new Set();
         
-        boxes.style("opacity", function(d) {
+        const selected = groupedData.filter(d => {
             const bx = x(d.week_number);
             const by = y(d.weekday);
             const cx = bx + x.bandwidth()/2;
             const cy = by + y.bandwidth()/2;
-            const isInside = cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
-            if (isInside) selectedMd.add(getMonthDay(d.date));
-            return isInside ? 1 : 0.2;
+            return cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
         });
         
-        dispatch.call("filterByDate", this, selectedMd, "heatmap");
+        const selectedMd = new Set(selected.map(d => getMonthDay(d.date)));
+        
+        boxes.style("opacity", d => selected.includes(d) ? 1 : 0.2);
+        
+        dispatchLineHeatmap.call("filter", this, selectedMd, "heatmap");
     }
 
-    dispatch.on("filterByDate.heatmap", function(selectedMd, source) {
+    dispatchLineHeatmap.on("filter.heatmap", function(selectedMd, source) {
         if (source === "heatmap") return;
         heatmapG.select(".brush").call(brush.move, null);
-        if (!selectedMd) {
+        
+        if (selectedMd.size === 0) {
             boxes.style("opacity", 1);
         } else {
             boxes.style("opacity", d => selectedMd.has(getMonthDay(d.date)) ? 1 : 0.2);

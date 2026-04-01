@@ -1,4 +1,4 @@
-import { dispatch, getMonthDay } from "./script.js";
+import { dispatchScatterBar, getMonthDay } from "./script.js";
 
 // MARGIN CONVENTIONS
 const margin = { top: 20, right: 20, bottom: 70, left: 70 };
@@ -109,7 +109,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
         .enter()
         .append("circle")
         .attr("r", 5)
-        .attr("fill", d => d.weather === "sun" ? "#ff9742" : "#487edb")
+        .style("fill", "#487edb")
         .style("opacity", 0.6);
 
 	// interaction
@@ -121,45 +121,44 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
         .attr("class", "brush")
         .call(brush);
 
+    // brushing!
     function brushed(event) {
         if (!event.sourceEvent) return;
         
         if (!event.selection) {
-            circles.style("opacity", 0.6).attr("r", 5);
-            dispatch.call("filterByDate", this, null, "scatter");
+            circles.style("opacity", 0.6).attr("r", 5).style("fill", "#487edb");
+            dispatchScatterBar.call("filter", this, [], "scatter");
             return;
         }
         
         const [[x0, y0], [x1, y1]] = event.selection;
-        const selectedMd = new Set();
         
-        circles.style("opacity", function(d) {
+        // filter data based on brush
+        const selected = data.filter(d => {
             const cx = x(d[currentX]);
             const cy = y(d[currentY]);
-            const isInside = cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
-            if (isInside) selectedMd.add(getMonthDay(d.date));
-            return isInside ? 1 : 0.1;
-        }).attr("r", d => {
-            const cx = x(d[currentX]);
-            const cy = y(d[currentY]);
-            const isInside = cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
-            return isInside ? 7 : 5;
+            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
         });
         
-        dispatch.call("filterByDate", this, selectedMd, "scatter");
+        // modify appearance of brushed circles
+        circles.style("opacity", d => selected.includes(d) ? 1 : 0.1);
+        
+        dispatchScatterBar.call("filter", this, selected, "scatter");
     }
 
-    dispatch.on("filterByDate.scatter", function(selectedMd, source) {
+    // listen to bar chart updates
+    dispatchScatterBar.on("filter.scatter", function(selectedWeathers, source) {
         if (source === "scatter") return;
         scatterG.select(".brush").call(brush.move, null);
-        if (!selectedMd) {
-            circles.style("opacity", 0.6).attr("r", 5);
+        if (!selectedWeathers || selectedWeathers.size === 0) {
+            circles.style("opacity", 0.6).attr("r", 5).style("fill", "#487edb");
         } else {
-            circles.style("opacity", d => selectedMd.has(getMonthDay(d.date)) ? 1 : 0.1)
-                   .attr("r", d => selectedMd.has(getMonthDay(d.date)) ? 7 : 5);
+            circles.style("opacity", d => selectedWeathers.has(d.weather) ? .8 : 0.1)
+                .style("fill", d => selectedWeathers.has(d.weather) ? "#ff9742" : "#487edb");
         }
     });
 
+    // tooltips
     scatterG.on("mousemove", (event) => {
         const [mx, my] = d3.pointer(event);
         let hovered = null;
@@ -182,29 +181,6 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
              tooltip.style("opacity", 0);
         }
     }).on("mouseleave", () => tooltip.style("opacity", 0));
-
-	// add legend
-	const legendGroups = scatterG.selectAll(".legend")
-		.data([{label: "Sun", color: "#ff9742"}, {label: "Other", color: "#487edb"}])
-		.enter()
-		.append("g")
-		.attr("class", "legend")
-		.attr("transform", (d, i) => `translate(${width - 80}, ${height - margin.bottom + i * 20})`);
-
-	legendGroups.append("rect")
-		.attr("x", 0)
-		.attr("width", 12)
-		.attr("height", 12)
-		.style("fill", d => d.color)
-		.style("opacity", 0.7);
-
-	legendGroups.append("text")
-		.attr("x", 20)
-		.attr("y", 6)
-		.attr("dy", ".35em")
-		.style("text-anchor", "start")
-		.style("font-size", "14px")
-		.text(d => d.label);
 
     // update function to redraw on select change
     function update() {

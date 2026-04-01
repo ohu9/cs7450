@@ -26,4 +26,6 @@ export const tooltip = d3.select("body").append("div")
 	.style("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
 
 export const getMonthDay = (date) => `${date.getMonth()}-${date.getDate()}`;
-export const dispatch = d3.dispatch("filterByDate");
+// listeners for linked brushing across files
+export const dispatchScatterBar = d3.dispatch("filter");
+export const dispatchLineHeatmap = d3.dispatch("filter");
