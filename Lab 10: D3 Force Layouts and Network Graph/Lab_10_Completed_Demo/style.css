@@ -1,0 +1,33 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    background-color: #f8f8f6;
+    color: #2c3e50;
+}
+
+#chart-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+svg {
+    width: 900px;
+    height: 600px;
+}
+
+.links line {
+    stroke: #b2bec3;
+    stroke-opacity: 0.4;
+    stroke-width: 1.5px;
+}
+
+.nodes circle {
+    cursor: pointer;
+}
+
+text {
+    font-size: 11px;
+    pointer-events: none;
+    fill: #636e72;
+}

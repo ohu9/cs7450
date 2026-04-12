@@ -1,0 +1,17 @@
+id,type,group
+Dr. Aris,Researcher,1
+Dr. Benning,Researcher,1
+Dr. Chen,Researcher,1
+Dr. Diaz,Researcher,1
+Dr. Evans,Researcher,1
+NSF Grant #402,Grant,2
+NIH Grant #118,Grant,2
+Dept of Energy,Grant,2
+Neural Systems Lab,Lab,3
+HCI Institute,Lab,3
+Robotics Facility,Lab,3
+Journal of Robotics,Publication,4
+Nature Intelligence,Publication,4
+IEEE Transactions,Publication,4
+Academic Press,Publication,4
+Jack, TA, 5
