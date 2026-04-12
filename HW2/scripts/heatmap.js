@@ -45,6 +45,7 @@ d3.csv("atl_weather_20to22.csv", cleanWeatherData).then(data => {
     const color = d3.scaleSequential()
         .domain([d3.min(groupedData, d => d.tempmax), d3.max(groupedData, d => d.tempmax)])
         .interpolator(d3.interpolateOrRd);
+        
     
     // add boxes
     const boxes = heatmapG.selectAll("rect")
