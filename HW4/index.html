@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jack's Last Lab</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+</head>
+<body>
+    <main>
+        <header id="intro">
+            <h1>LITERALLY YOU RIGHT NOW</h1>
+            <img src="you.png" alt="Jack crying in the lab" id="meme-image">
+            <p>Scroll down to begin the final lab...</p>
+        </header>
+
+        <section id="scrolly">
+            <div class="sticky">
+                <div id="chart"></div>
+            </div>
+            <article class="scroll">
+                <div class="step" data-step="0"></div>
+                <div class="step" data-step="1"></div>
+                <div class="step" data-step="2"></div>
+                <div class="step" data-step="3"></div>
+            </article>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
