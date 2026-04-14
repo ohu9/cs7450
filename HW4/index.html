@@ -3,29 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jack's Last Lab</title>
+    <title>The Journey of Tea</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
 </head>
 <body>
     <main>
-        <header id="intro">
-            <h1>LITERALLY YOU RIGHT NOW</h1>
-            <img src="you.png" alt="Jack crying in the lab" id="meme-image">
-            <p>Scroll down to begin the final lab...</p>
-        </header>
-
+        <div id="tooltip" class="tooltip"></div>
         <section id="scrolly">
-            <div class="sticky">
-                <div id="chart"></div>
+            <!-- Step 0: Intro  -->
+            <div class="step" data-step="0">
+                <div class="step-text full">
+                    <h1>The Journey of Tea</h1>
+                    <p>Every year, humans drink over 3 billion cups of tea per day. But the journey from a mountain hillside to your mug is shaped by soil, labor, colonial history, and global commodity markets.</p>
+                </div>
             </div>
-            <article class="scroll">
-                <div class="step" data-step="0"></div>
-                <div class="step" data-step="1"></div>
-                <div class="step" data-step="2"></div>
-                <div class="step" data-step="3"></div>
-            </article>
+
+            <!-- Step 1: Map -->
+            <div class="step" data-step="1">
+                <div class="step-text">
+                    <h2>Where Tea is Born</h2>
+                    <p>Tea is one of the most geographically constrained crops on Earth. It needs altitude, humidity, and a very specific temperature range. That constraint shapes everything that comes after.</p>
+                </div>
+                <div class="step-chart" id="map-chart"></div>
+            </div>
+
+            <!-- Step 2: Sankey -->
+            <div class="step" data-step="2">
+                <div class="step-text">
+                    <h2>The Processing Fork in the Road</h2>
+                    <p>The same leaf, plucked from the same bush, can become a $40 tin of Silver Needle white tea or a commodity black tea sold by the kilogram at auction. The difference is almost entirely in what happens in the next 24 hours.</p>
+                </div>
+                <div class="step-chart" id="sankey-chart"></div>
+            </div>
+
+            <!-- Step 3: Dumbbell -->
+            <div class="step" data-step="3">
+                <div class="step-text">
+                    <h2>The Export Paradox</h2>
+                    <p>Some countries don't grow tea for themselves — they grow it for the world. That dependency makes their economies acutely vulnerable to price swings at international auction houses.</p>
+                </div>
+                <div class="step-chart" id="dumbbell-chart"></div>
+            </div>
+
+            <!-- Step 4: Line Chart -->
+            <div class="step" data-step="4">
+                <div class="step-text">
+                    <h2>The Price a Leaf Gets</h2>
+                    <p>A kilogram of bulk black tea fetches roughly the same price at auction today as it did decades ago, adjusted for inflation. Meanwhile, retail value has risen. The leaf's value is captured far from where it grows.</p>
+                </div>
+                <div class="step-chart" id="line-chart"></div>
+            </div>
+
+            <!-- Step 5: Conclusion -->
+            <div class="step" data-step="5">
+                <div class="step-text full">
+                    <h2>Conclusion</h2>
+                    <p>Tea is the world's most democratic drink — cheap, universal, ancient. The next time you steep a bag, remember the journey. Each stop added value — just not necessarily for the people who grew it.</p>
+                </div>
+            </div>
         </section>
     </main>
     <script src="script.js"></script>

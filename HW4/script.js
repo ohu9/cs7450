@@ -1,158 +1,344 @@
 const scroller = scrollama();
-const width = window.innerWidth;
-const height = window.innerHeight;
-const baseRadius = 8; 
-const padding = 6;
-const cols = 10;
-const colorMatrix = "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
 
-const sadnessGroups = [
-    "In Denial", 
-    "Holding it Together", 
-    "Kinda Sad", 
-    "Very Sad", 
-    "Bawling"
-];
+const margin = { top: 40, right: 40, bottom: 60, left: 60 };
 
-const data = d3.range(47).map(i => {
-    return {
-        id: i,
-        actualSadness: i % 5,
-        grade: Math.floor(Math.random() * 50) + 50,   
-        sadnessLevel: Math.random() * 100 
-    };
+// Global Data
+let worldData, faoData, comtradeData, priceData;
+
+// Tooltip setup
+const tooltip = d3.select("#tooltip");
+
+// Color scale
+const highlightColor = "#4a6b3d"; // Match CSS var
+
+// Data Loading and Parsing
+Promise.all([
+    d3.json("https://unpkg.com/world-atlas@2.0.2/countries-50m.json"),
+    d3.csv("data/FAOSTAT_tea_production_data.csv"),
+    d3.csv("data/comtrade_export_data.csv"),
+    d3.text("data/commodity_price_history.csv")
+]).then(function([world, fao, comtrade, priceRaw]) {
+    
+    // 1. Map Data
+    worldData = topojson.feature(world, world.objects.countries);
+
+    // 2. FAO Production Data
+    faoData = fao.filter(d => d.Element === "Production");
+    
+    // 3. Comtrade Export Data
+    comtradeData = comtrade.filter(d => d.flowDesc === "Export");
+
+    // 4. Price Data
+    const priceLines = priceRaw.split(/\r?\n/).slice(4);
+    priceData = d3.csvParse(priceLines.join('\n'));
+    priceData = priceData.filter(d => d[""] && d["Tea, avg 3 auctions"]);
+    
+    initCharts();
+    setupScrollama();
+
+}).catch(function(error) {
+    console.error("Error loading data: ", error);
 });
 
-const gridWidth = cols * (baseRadius * 4);
-const offsetX = (width - gridWidth) / 2;
-const offsetY = height * 0.2;
-
-const radiusScale = d3.scaleLinear().domain([50, 100]).range([4, 16]);
-
-const colorScale = d3.scaleLinear()
-    .domain([0, 50, 100])
-    .range(["#B3A369", "#003057", "#42a5f5"]); 
-
-const xScale = d3.scaleLinear().domain([0, 100]).range([100, width - 100]);
-
-const svg = d3.select("#chart").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-const defs = svg.append("defs");
-const filter = defs.append("filter").attr("id", "goo");
-filter.append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", 8).attr("result", "blur");
-filter.append("feColorMatrix").attr("in", "blur").attr("mode", "matrix").attr("values", colorMatrix).attr("result", "goo");
-filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "goo");
-
-const xAxis = svg.append("g")
-    .attr("transform", `translate(0, ${height / 2 + 100})`)
-    .style("opacity", 0)
-    .call(d3.axisBottom(xScale));
-
-const xAxisLabel = svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", height / 2 + 140)
-    .style("opacity", 0)
-    .attr("text-anchor", "middle")
-    .style("font-family", "sans-serif")
-    .style("font-weight", "bold")
-    .text("Level of Sadness (Tears per Minute)");
-
-const groupLabels = svg.selectAll(".group-label")
-    .data(d3.range(5))
-    .join("text")
-    .attr("class", "group-label")
-    .attr("x", d => (width / 6) * (d + 1))
-    .attr("y", height / 2 - 120)
-    .attr("text-anchor", "middle")
-    .style("opacity", 0)
-    .style("font-family", "sans-serif")
-    .style("font-weight", "bold")
-    .style("fill", "#555")
-    .text(d => sadnessGroups[d]);
-
-const circleGroup = svg.append("g");
-
-const nodes = circleGroup.selectAll("circle")
-    .data(data, d => d.id)
-    .join("circle")
-    .attr("cx", width / 2)
-    .attr("cy", -50) 
-    .attr("r", baseRadius)
-    .attr("fill", "#003057");
-
-const simulation = d3.forceSimulation(data)
-    .force("collide", d3.forceCollide().radius(d => radiusScale(d.grade) + 2).iterations(2))
-    .on("tick", () => {
-        nodes.attr("cx", d => d.x).attr("cy", d => d.y);
-    })
-    .stop();
-
-function handleStepEnter(response) {
-    const t = d3.transition().duration(1000).ease(d3.easeCubicInOut);
-
-    circleGroup.style("filter", "none");
-
-    xAxis.transition(t).style("opacity", response.index === 2 ? 1 : 0);
-    xAxisLabel.transition(t).style("opacity", response.index === 2 ? 1 : 0);
-    groupLabels.transition(t).style("opacity", response.index === 1 ? 1 : 0);
-
-    switch(response.index) {
-        case 0:
-            simulation.stop();
-            nodes.transition(t)
-                .attr("cx", d => { d.x = (d.id % cols) * (baseRadius * 4) + offsetX; return d.x; })
-                .attr("cy", d => { d.y = Math.floor(d.id / cols) * (baseRadius * 4) + offsetY; return d.y; })
-                .attr("r", d => radiusScale(d.grade))
-                .attr("fill", "#003057");
-            break;
-
-        case 1:
-            nodes.transition(t)
-                .attr("r", d => radiusScale(d.grade))
-                .attr("fill", d => colorScale(d.sadnessLevel));
-            
-            simulation
-                .force("x", d3.forceX(d => (width / 6) * (d.actualSadness + 1)).strength(0.08))
-                .force("y", d3.forceY(height / 2).strength(0.08))
-                .force("collide", d3.forceCollide().radius(d => radiusScale(d.grade) + 2))
-                .alpha(1).restart();
-            break;
-
-        case 2:
-            nodes.transition(t)
-                .attr("r", d => radiusScale(d.grade))
-                .attr("fill", d => colorScale(d.sadnessLevel)); 
-
-            simulation
-                .force("x", d3.forceX(d => xScale(d.sadnessLevel)).strength(0.2))
-                .force("y", d3.forceY(height / 2).strength(0.05))
-                .force("collide", d3.forceCollide().radius(d => radiusScale(d.grade) + 1.5))
-                .alpha(1).restart();
-            break;
-
-        case 3:
-            circleGroup.style("filter", "url(#goo)");
-            
-            nodes.transition(t)
-                .attr("r", baseRadius) 
-                .attr("fill", "#42a5f5");
-
-            simulation
-                .force("x", d3.forceX(width / 2).strength(0.02)) 
-                .force("y", d3.forceY(height - 20).strength(0.3)) 
-                .force("collide", d3.forceCollide().radius(baseRadius + 1))
-                .alpha(1).restart();
-            break;
-    }
+function initCharts() {
+    drawMap();
+    drawSankey();
+    drawDumbbell();
+    drawLineChart();
 }
 
-scroller
-    .setup({ step: ".step", offset: 0.5, debug: false })
-    .onStepEnter(handleStepEnter);
+// Utility to get container dimensions
+function getDimensions(selector) {
+    const el = document.querySelector(selector);
+    const width = el.clientWidth;
+    const height = el.clientHeight || window.innerHeight * 0.8;
+    return {
+        width,
+        height,
+        chartWidth: width - margin.left - margin.right,
+        chartHeight: height - margin.top - margin.bottom
+    };
+}
 
-window.addEventListener("resize", () => {
-    svg.attr("width", window.innerWidth).attr("height", window.innerHeight);
-    scroller.resize();
-});
+function drawMap() {
+    const {width, height, chartWidth, chartHeight} = getDimensions("#map-chart");
+    const container = d3.select("#map-chart");
+    const svg = container.append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    const projection = d3.geoNaturalEarth1()
+        .fitSize([chartWidth, chartHeight], worldData)
+        .translate([width/2, height/2]);
+        
+    const path = d3.geoPath().projection(projection);
+
+    let productionMap = new Map();
+    faoData.forEach(d => {
+        let name = d.Area === "China, mainland" ? "China" : d.Area;
+        productionMap.set(name, +d.Value);
+    });
+
+    const maxProd = d3.max(Array.from(productionMap.values()));
+    const colorScale = d3.scaleSequential(d3.interpolateGreens)
+        .domain([0, maxProd * 0.3]); 
+
+    svg.append("g")
+        .selectAll("path")
+        .data(worldData.features)
+        .join("path")
+        .attr("d", path)
+        .attr("fill", d => {
+            const val = productionMap.get(d.properties.name);
+            return val ? colorScale(val) : "#e0e0e0";
+        })
+        .attr("stroke", "#ffffff")
+        .attr("stroke-width", 0.5)
+        .on("mouseenter", (event, d) => {
+            const val = productionMap.get(d.properties.name);
+            if(val) {
+                tooltip.style("display", "block")
+                    .html(`<strong>${d.properties.name}</strong><br>Production: ${d3.format(",")(val)} t`);
+            }
+        })
+        .on("mousemove", event => {
+            tooltip.style("left", (event.pageX + 10) + "px")
+                   .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseleave", () => tooltip.style("display", "none"));
+}
+
+function drawSankey() {
+    const {width, height, chartWidth, chartHeight} = getDimensions("#sankey-chart");
+    const container = d3.select("#sankey-chart");
+    const svg = container.append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top + 50})`);
+
+    const sankeyData = {
+        nodes: [
+            { id: "Fresh Leaves" }, { id: "Withering" }, { id: "Oxidation" },
+            { id: "Fixation (Firing/Steaming)" }, { id: "Green Tea" },
+            { id: "White Tea" }, { id: "Oolong Tea" }, { id: "Black Tea" }
+        ],
+        links: [
+            { source: "Fresh Leaves", target: "Withering", value: 100 },
+            { source: "Withering", target: "White Tea", value: 10 },
+            { source: "Withering", target: "Fixation (Firing/Steaming)", value: 30 },
+            { source: "Fixation (Firing/Steaming)", target: "Green Tea", value: 30 },
+            { source: "Withering", target: "Oxidation", value: 60 },
+            { source: "Oxidation", target: "Oolong Tea", value: 20 },
+            { source: "Oxidation", target: "Black Tea", value: 40 }
+        ]
+    };
+
+    const nodeMap = new Map(sankeyData.nodes.map((d, i) => [d.id, i]));
+    const links = sankeyData.links.map(l => ({
+        source: nodeMap.get(l.source),
+        target: nodeMap.get(l.target),
+        value: l.value
+    }));
+
+    const sankeyFormat = d3.sankey()
+        .nodeWidth(20)
+        .nodePadding(40)
+        .extent([[0, 0], [chartWidth, chartHeight - 100]]);
+    
+    const { nodes, links: sankeyLinks } = sankeyFormat({
+        nodes: sankeyData.nodes.map(d => Object.assign({}, d)),
+        links: links
+    });
+
+    const color = d3.scaleOrdinal()
+        .domain(["Green Tea", "White Tea", "Oolong Tea", "Black Tea", "Fresh Leaves", "Withering", "Oxidation", "Fixation (Firing/Steaming)"])
+        .range(["#388e3c", "#e0e0e0", "#f57c00", "#3e2723", highlightColor, "#689f38", "#ef6c00", "#afb42b"]);
+
+    svg.append("g")
+        .selectAll("rect")
+        .data(nodes)
+        .join("rect")
+        .attr("x", d => d.x0)
+        .attr("y", d => d.y0)
+        .attr("height", d => d.y1 - d.y0)
+        .attr("width", d => d.x1 - d.x0)
+        .attr("fill", d => color(d.id))
+        .attr("stroke", "#888");
+
+    svg.append("g")
+        .attr("fill", "none")
+        .selectAll("path")
+        .data(sankeyLinks)
+        .join("path")
+        .attr("class", "sankey-link")
+        .attr("d", d3.sankeyLinkHorizontal())
+        .attr("stroke", d => color(d.source.id))
+        .attr("stroke-width", d => Math.max(1, d.width));
+
+    svg.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 12)
+        .selectAll("text")
+        .data(nodes)
+        .join("text")
+        .attr("x", d => d.x0 < chartWidth / 2 ? d.x1 + 6 : d.x0 - 6)
+        .attr("y", d => (d.y1 + d.y0) / 2)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", d => d.x0 < chartWidth / 2 ? "start" : "end")
+        .text(d => d.id)
+        .attr("fill", "#333");
+}
+
+function drawDumbbell() {
+    const {width, height, chartWidth, chartHeight} = getDimensions("#dumbbell-chart");
+    const container = d3.select("#dumbbell-chart");
+    const svg = container.append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${margin.left + 60}, ${margin.top})`);
+    
+    let prodData = faoData
+        .filter(d => d.Value)
+        .map(d => ({ 
+            country: d.Area === "China, mainland" ? "China" : d.Area, 
+            iso: d["Area Code (M49)"], 
+            production: +d.Value 
+        }))
+        .sort((a,b) => b.production - a.production)
+        .slice(0, 10);
+        
+    prodData.forEach(d => {
+        const expRow = comtradeData.find(c => c.reporterDesc === d.country || c.reporterISO === d.iso || (d.country === "China" && c.reporterDesc === "China"));
+        d.export = expRow && expRow.netWgt ? (+expRow.netWgt / 1000) : 0;
+    });
+
+    const yScale = d3.scaleBand()
+        .domain(prodData.map(d => d.country))
+        .range([0, chartHeight])
+        .padding(0.4);
+
+    const maxVal = d3.max(prodData, d => d.production);
+    const xScale = d3.scaleLinear()
+        .domain([0, maxVal])
+        .range([0, chartWidth - 100]);
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0, ${chartHeight})`)
+        .call(d3.axisBottom(xScale).ticks(5).tickFormat(d => d / 1000 + "k t"));
+        
+    svg.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(yScale));
+
+    svg.selectAll(".dumbbell-line")
+        .data(prodData)
+        .join("line")
+        .attr("class", "dumbbell-line")
+        .attr("y1", d => yScale(d.country) + yScale.bandwidth() / 2)
+        .attr("y2", d => yScale(d.country) + yScale.bandwidth() / 2)
+        .attr("x1", d => xScale(d.export))
+        .attr("x2", d => xScale(d.production));
+
+    svg.selectAll(".prod-dot")
+        .data(prodData)
+        .join("circle")
+        .attr("class", "dumbbell-point prod")
+        .attr("cy", d => yScale(d.country) + yScale.bandwidth() / 2)
+        .attr("cx", d => xScale(d.production))
+        .attr("r", 7)
+        .on("mouseenter", (event, d) => {
+            tooltip.style("display", "block").html(`Production: ${Math.round(d.production)} t`);
+        })
+        .on("mousemove", event => tooltip.style("left", (event.pageX + 10) + "px").style("top", (event.pageY + 10) + "px"))
+        .on("mouseleave", () => tooltip.style("display", "none"));
+
+    svg.selectAll(".exp-dot")
+        .data(prodData.filter(d => d.export > 0))
+        .join("circle")
+        .attr("class", "dumbbell-point exp")
+        .attr("cy", d => yScale(d.country) + yScale.bandwidth() / 2)
+        .attr("cx", d => xScale(d.export))
+        .attr("r", 7)
+        .on("mouseenter", (event, d) => {
+            tooltip.style("display", "block").html(`Export: ${Math.round(d.export)} t`);
+        })
+        .on("mousemove", event => tooltip.style("left", (event.pageX + 10) + "px").style("top", (event.pageY + 10) + "px"))
+        .on("mouseleave", () => tooltip.style("display", "none"));
+        
+    const legend = svg.append("g").attr("transform", `translate(${chartWidth - 200}, 20)`);
+    legend.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 6).attr("class", "dumbbell-point prod");
+    legend.append("text").attr("x", 12).attr("y", 4).text("Production Vol.").style("font-size", "12px");
+    
+    legend.append("circle").attr("cx", 0).attr("cy", 20).attr("r", 6).attr("class", "dumbbell-point exp");
+    legend.append("text").attr("x", 12).attr("y", 24).text("Export Vol.").style("font-size", "12px");
+}
+
+function drawLineChart() {
+    const {width, height, chartWidth, chartHeight} = getDimensions("#line-chart");
+    const container = d3.select("#line-chart");
+    const svg = container.append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+        
+    const parseTime = d3.timeParse("%YM%m");
+    
+    let cleanPrice = priceData.map(d => ({
+        date: parseTime(d[""]),
+        price: +d["Tea, avg 3 auctions"]
+    })).filter(d => d.date && d.price);
+
+    const xScale = d3.scaleTime()
+        .domain(d3.extent(cleanPrice, d => d.date))
+        .range([0, chartWidth]);
+
+    const yScale = d3.scaleLinear()
+        .domain([0, d3.max(cleanPrice, d => d.price)])
+        .nice()
+        .range([chartHeight, 0]);
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0, ${chartHeight})`)
+        .call(d3.axisBottom(xScale));
+
+    svg.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(yScale));
+        
+    svg.append("text")
+        .attr("x", 10)
+        .attr("y", 10)
+        .attr("font-size", "12px")
+        .attr("fill", "#666")
+        .text("Price per kg (Nominal USD)");
+
+    const line = d3.line()
+        .x(d => xScale(d.date))
+        .y(d => yScale(d.price));
+
+    svg.append("path")
+        .datum(cleanPrice)
+        .attr("fill", "none")
+        .attr("stroke", highlightColor)
+        .attr("stroke-width", 2)
+        .attr("d", line);
+}
+
+function setupScrollama() {
+    scroller.setup({
+        step: ".step",
+        offset: 0.5,
+        debug: false
+    })
+    .onStepEnter(response => {
+        d3.selectAll(".step").classed("is-active", false);
+        d3.select(response.element).classed("is-active", true);
+    });
+
+    window.addEventListener("resize", scroller.resize);
+}
