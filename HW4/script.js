@@ -2,16 +2,16 @@ const scroller = scrollama();
 
 const margin = { top: 40, right: 40, bottom: 60, left: 60 };
 
-// Global Data
+// define each data source
 let worldData, faoData, comtradeData, priceData;
 
-// Tooltip setup
+// tooltip setup
 const tooltip = d3.select("#tooltip");
 
-// Color scale
-const highlightColor = "#4a6b3d"; // Match CSS var
+// color scale
+const highlightColor = "#819067"; 
 
-// Data Loading and Parsing
+// data loading and parsing
 Promise.all([
     d3.json("https://unpkg.com/world-atlas@2.0.2/countries-50m.json"),
     d3.csv("data/FAOSTAT_tea_production_data.csv"),
@@ -19,16 +19,16 @@ Promise.all([
     d3.text("data/commodity_price_history.csv")
 ]).then(function([world, fao, comtrade, priceRaw]) {
     
-    // 1. Map Data
+    // map data
     worldData = topojson.feature(world, world.objects.countries);
 
-    // 2. FAO Production Data
+    // FAO production data
     faoData = fao.filter(d => d.Element === "Production");
     
-    // 3. Comtrade Export Data
+    // comtrade export data
     comtradeData = comtrade.filter(d => d.flowDesc === "Export");
 
-    // 4. Price Data
+    // price data
     const priceLines = priceRaw.split(/\r?\n/).slice(4);
     priceData = d3.csvParse(priceLines.join('\n'));
     priceData = priceData.filter(d => d[""] && d["Tea, avg 3 auctions"]);
@@ -47,7 +47,8 @@ function initCharts() {
     drawLineChart();
 }
 
-// Utility to get container dimensions
+// utility to get container dimensions
+// https://www.w3schools.com/jsref/prop_element_clientheight.asp
 function getDimensions(selector) {
     const el = document.querySelector(selector);
     const width = el.clientWidth;
@@ -60,6 +61,7 @@ function getDimensions(selector) {
     };
 }
 
+// Step 1: Map
 function drawMap() {
     const {width, height, chartWidth, chartHeight} = getDimensions("#map-chart");
     const container = d3.select("#map-chart");
@@ -67,30 +69,40 @@ function drawMap() {
         .attr("width", width)
         .attr("height", height);
 
-    const projection = d3.geoNaturalEarth1()
-        .fitSize([chartWidth, chartHeight], worldData)
-        .translate([width/2, height/2]);
-        
-    const path = d3.geoPath().projection(projection);
-
     let productionMap = new Map();
     faoData.forEach(d => {
         let name = d.Area === "China, mainland" ? "China" : d.Area;
         productionMap.set(name, +d.Value);
     });
 
-    const maxProd = d3.max(Array.from(productionMap.values()));
-    const colorScale = d3.scaleSequential(d3.interpolateGreens)
-        .domain([0, maxProd * 0.3]); 
+    const teaFeatures = worldData.features.filter(d => productionMap.has(d.properties.name));
+    const teaWorld = { type: "FeatureCollection", features: teaFeatures };
 
-    svg.append("g")
-        .selectAll("path")
+    // We use chartWidth twice here to absolutely guarantee the width is the bottleneck constraint. This preserves the high-zoom level!
+    const projection = d3.geoMercator()
+        .fitSize([chartWidth, chartWidth], teaWorld);
+        
+    // We then force the vertical translation to sit perfectly identically in the Y center of our smaller SVG wrapper
+    const t = projection.translate();
+    projection.translate([t[0], height / 2]);
+        
+    const path = d3.geoPath().projection(projection);
+
+    const maxProd = d3.max(Array.from(productionMap.values()));
+    
+    const colorScale = d3.scaleLinear()
+        .domain([0, maxProd])
+        .range(["#bbcdab", "#284321"]);
+
+    const g = svg.append("g");
+
+    g.selectAll("path")
         .data(worldData.features)
         .join("path")
         .attr("d", path)
         .attr("fill", d => {
             const val = productionMap.get(d.properties.name);
-            return val ? colorScale(val) : "#e0e0e0";
+            return val ? colorScale(val) : "#ebebebff";
         })
         .attr("stroke", "#ffffff")
         .attr("stroke-width", 0.5)
@@ -106,6 +118,65 @@ function drawMap() {
                    .style("top", (event.pageY + 10) + "px");
         })
         .on("mouseleave", () => tooltip.style("display", "none"));
+
+    // legend
+    const legendWidth = 150;
+    const legendHeight = 12;
+    
+    const legendG = svg.append("g")
+        .attr("transform", `translate(${20}, ${height - 25})`); 
+        
+    const defs = svg.append("defs");
+    const linearGradient = defs.append("linearGradient")
+        .attr("id", "map-legend-gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "0%");
+        
+    linearGradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#bbcdab"); 
+        
+    linearGradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#284321");
+        
+    legendG.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", "url(#map-legend-gradient)");
+        
+    // legend gradient text
+    legendG.append("text")
+        .attr("x", 0)
+        .attr("y", -5)
+        .text("0 tons")
+        .style("font-size", "12px")
+        .attr("fill", "#666");
+        
+    legendG.append("text")
+        .attr("x", legendWidth)
+        .attr("y", -5)
+        .attr("text-anchor", "end")
+        .text(d3.format(".2s")(maxProd) + " tons")
+        .style("font-size", "12px")
+        .attr("fill", "#666");
+
+    // "Non-producing" box
+    legendG.append("rect")
+        .attr("x", legendWidth + 30)
+        .attr("y", 0)
+        .attr("width", legendHeight)
+        .attr("height", legendHeight)
+        .style("fill", "#ebebebff");
+        
+    legendG.append("text")
+        .attr("x", legendWidth + 30 + legendHeight + 6)
+        .attr("y", legendHeight - 2)
+        .text("Non-Producing")
+        .style("font-size", "12px")
+        .attr("fill", "#666");
 }
 
 function drawSankey() {

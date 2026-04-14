@@ -6,7 +6,9 @@ html {
 :root {
     --bg-color: #f7f5f0;
     --text-color: #111111;
-    --highlight-color: #4a6b3d;
+    --dark-green: #284321;
+    --medium-green: #819067;
+    --light-green: #bbcdab;
     --chart-bg: #f7f5f0;
     --axis-color: #444444;
 }
@@ -21,8 +23,12 @@ body {
 
 h1, h2, h3 {
     font-family: 'Merriweather', serif;
-    color: var(--highlight-color);
+    color: var(--medium-green);
     margin-top: 0;
+}
+
+h1 {
+    color: var(--dark-green);
 }
 
 #scrolly {
@@ -42,10 +48,11 @@ h1, h2, h3 {
     justify-content: center;
     scroll-snap-align: center;
     scroll-snap-stop: always;
+    gap: 4rem;
 }
 
 .step-text {
-    width: 35%;
+    width: 40%;
     opacity: 0.4;
     transition: opacity 0.5s ease;
 }
@@ -68,9 +75,13 @@ h1, h2, h3 {
 }
 
 .step-chart {
-    width: 65%;
-    height: 80vh;
+    width: 55%;
+    height: 65vh;
     position: relative;
+}
+
+#map-chart {
+    height: 40vh;
 }
 
 .axis text {
@@ -99,7 +110,6 @@ h1, h2, h3 {
     stroke-opacity: 0.7;
 }
 
-/* Dumbbell specific styles */
 .dumbbell-line { stroke: #888888; stroke-width: 2px; }
 .dumbbell-point.prod { fill: var(--highlight-color); }
 .dumbbell-point.exp { fill: #9c4921; }
