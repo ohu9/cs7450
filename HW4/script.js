@@ -10,6 +10,7 @@ const tooltip = d3.select("#tooltip");
 
 // color scale
 const highlightColor = "#819067"; 
+const dispatch = d3.dispatch("brush", "unbrush"); // Unified brushing bus
 
 // data loading and parsing
 Promise.all([
@@ -96,6 +97,12 @@ function drawMap() {
 
     const g = svg.append("g");
 
+    // top 5 producing countries for bar chart
+    const top5Countries = new Set(Array.from(productionMap.entries())
+        .sort((a,b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(d => d[0]));
+
     g.selectAll("path")
         .data(worldData.features)
         .join("path")
@@ -106,18 +113,37 @@ function drawMap() {
         })
         .attr("stroke", "#ffffff")
         .attr("stroke-width", 0.5)
+        .attr("id", d => `map-${d.properties.name.replace(/\s+/g, '-')}`)
         .on("mouseenter", (event, d) => {
             const val = productionMap.get(d.properties.name);
             if(val) {
                 tooltip.style("display", "block")
                     .html(`<strong>${d.properties.name}</strong><br>Production: ${d3.format(",")(val)} t`);
+                
+                if (top5Countries.has(d.properties.name)) {
+                    dispatch.call("brush", this, d.properties.name);
+                }
             }
         })
         .on("mousemove", event => {
             tooltip.style("left", (event.pageX + 10) + "px")
                    .style("top", (event.pageY + 10) + "px");
         })
-        .on("mouseleave", () => tooltip.style("display", "none"));
+        .on("mouseleave", () => {
+            tooltip.style("display", "none");
+            dispatch.call("unbrush", this);
+        });
+
+    // listener for external brushing
+    dispatch.on("brush.map", (countryName) => {
+        g.selectAll("path").classed("dimmed", true);
+        const target = d3.select(`#map-${countryName.replace(/\s+/g, '-')}`);
+        if(!target.empty()) target.classed("dimmed", false);
+    });
+
+    dispatch.on("unbrush.map", () => {
+        g.selectAll("path").classed("dimmed", false);
+    });
 
     // legend
     const legendWidth = 150;
@@ -177,6 +203,86 @@ function drawMap() {
         .text("Non-Producing")
         .style("font-size", "12px")
         .attr("fill", "#666");
+
+    // draw the bar chart
+    drawBarChart(productionMap, colorScale);
+}
+
+function drawBarChart(productionMap, colorScale) {
+    const {width, height} = getDimensions("#bar-chart");
+    const container = d3.select("#bar-chart");
+    
+    // Adjusted margins to favor bottom text labels and tall columns
+    const innerMargin = { top: 25, right: 20, bottom: 30, left: 20 };
+    const chartWidth = width - innerMargin.left - innerMargin.right;
+    const chartHeight = height - innerMargin.top - innerMargin.bottom;
+
+    const svg = container.append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${innerMargin.left}, ${innerMargin.top})`);
+
+    // top 5 slice directly
+    let top5 = Array.from(productionMap.entries())
+        .map(([country, vol]) => ({ country, vol }))
+        .sort((a,b) => b.vol - a.vol)
+        .slice(0, 5);
+
+    const xScale = d3.scaleBand()
+        .domain(top5.map(d => d.country))
+        .range([0, chartWidth])
+        .padding(0.2);
+
+    const yScale = d3.scaleLinear()
+        .domain([0, d3.max(top5, d => d.vol)])
+        .range([chartHeight, 0]);
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0,${chartHeight})`)
+        .call(d3.axisBottom(xScale).tickSize(0))
+        .style("font-size", "13px")
+        .call(g => g.select(".domain").remove()); 
+
+    svg.append("g")
+        .selectAll("rect")
+        .data(top5)
+        .join("rect")
+        .attr("class", "bar")
+        .attr("id", d => `bar-${d.country.replace(/\s+/g, '-')}`)
+        .attr("x", d => xScale(d.country))
+        .attr("y", d => yScale(d.vol))
+        .attr("width", xScale.bandwidth())
+        .attr("height", d => chartHeight - yScale(d.vol))
+        .attr("fill", d => colorScale(d.vol))
+        .on("mouseenter", function(event, d) {
+            dispatch.call("brush", this, d.country);
+        })
+        .on("mouseleave", function(event, d) {
+            dispatch.call("unbrush", this);
+        });
+        
+    svg.append("g")
+        .selectAll("text")
+        .data(top5)
+        .join("text")
+        .text(d => d3.format(".3s")(d.vol) + " t")
+        .attr("x", d => xScale(d.country) + xScale.bandwidth() / 2)
+        .attr("y", d => yScale(d.vol) - 6)
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .attr("fill", "#666");
+
+    // connect listener to map
+    dispatch.on("brush.bar", (countryName) => {
+        svg.selectAll(".bar").classed("dimmed", true);
+        d3.select(`#bar-${countryName.replace(/\s+/g, '-')}`).classed("dimmed", false);
+    });
+    
+    dispatch.on("unbrush.bar", () => {
+        svg.selectAll(".bar").classed("dimmed", false);
+    });
 }
 
 function drawSankey() {

@@ -74,6 +74,16 @@ h1 {
     line-height: 1.6;
 }
 
+.step-visuals {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+}
+
+.step-visuals .step-chart {
+    width: 100%;
+}
+
 .step-chart {
     width: 55%;
     height: 65vh;
@@ -82,6 +92,15 @@ h1 {
 
 #map-chart {
     height: 40vh;
+}
+
+#bar-chart {
+    height: 25vh;
+}
+
+.dimmed {
+    opacity: 0.15 !important;
+    transition: opacity 0.3s ease;
 }
 
 .axis text {
