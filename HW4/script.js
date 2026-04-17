@@ -3,7 +3,7 @@ const scroller = scrollama();
 const margin = { top: 40, right: 40, bottom: 60, left: 60 };
 
 // define each data source
-let worldData, faoData, comtradeData, priceData;
+let worldData, faoData, comtradeData, priceData, sankeyCsvData;
 
 // tooltip setup
 const tooltip = d3.select("#tooltip");
@@ -17,8 +17,9 @@ Promise.all([
     d3.json("https://unpkg.com/world-atlas@2.0.2/countries-50m.json"),
     d3.csv("data/FAOSTAT_tea_production_data.csv"),
     d3.csv("data/comtrade_export_data.csv"),
-    d3.text("data/commodity_price_history.csv")
-]).then(function([world, fao, comtrade, priceRaw]) {
+    d3.text("data/commodity_price_history.csv"),
+    d3.csv("data/tea_processing_data.csv")
+]).then(function([world, fao, comtrade, priceRaw, processCsv]) {
     
     // map data
     worldData = topojson.feature(world, world.objects.countries);
@@ -33,6 +34,9 @@ Promise.all([
     const priceLines = priceRaw.split(/\r?\n/).slice(4);
     priceData = d3.csvParse(priceLines.join('\n'));
     priceData = priceData.filter(d => d[""] && d["Tea, avg 3 auctions"]);
+    
+    // process data
+    teaProcessData = processCsv;
     
     initCharts();
     setupScrollama();
@@ -294,34 +298,34 @@ function drawSankey() {
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top + 50})`);
 
+    const nodesSet = new Set();
+    teaProcessData.forEach(d => {
+        nodesSet.add(d.source);
+        nodesSet.add(d.target);
+    });
+
     const sankeyData = {
-        nodes: [
-            { id: "Fresh Leaves" }, { id: "Withering" }, { id: "Oxidation" },
-            { id: "Fixation (Firing/Steaming)" }, { id: "Green Tea" },
-            { id: "White Tea" }, { id: "Oolong Tea" }, { id: "Black Tea" }
-        ],
-        links: [
-            { source: "Fresh Leaves", target: "Withering", value: 100 },
-            { source: "Withering", target: "White Tea", value: 10 },
-            { source: "Withering", target: "Fixation (Firing/Steaming)", value: 30 },
-            { source: "Fixation (Firing/Steaming)", target: "Green Tea", value: 30 },
-            { source: "Withering", target: "Oxidation", value: 60 },
-            { source: "Oxidation", target: "Oolong Tea", value: 20 },
-            { source: "Oxidation", target: "Black Tea", value: 40 }
-        ]
+        nodes: Array.from(nodesSet).map(id => ({ id })),
+        links: teaProcessData.map(d => ({
+            source: d.source,
+            target: d.target,
+            value: +d.value_million_tonnes,
+            pct: +d.pct_of_global_harvest
+        }))
     };
 
     const nodeMap = new Map(sankeyData.nodes.map((d, i) => [d.id, i]));
     const links = sankeyData.links.map(l => ({
         source: nodeMap.get(l.source),
         target: nodeMap.get(l.target),
-        value: l.value
+        value: l.value,
+        pct: l.pct
     }));
 
     const sankeyFormat = d3.sankey()
         .nodeWidth(20)
         .nodePadding(40)
-        .extent([[0, 0], [chartWidth, chartHeight - 100]]);
+        .extent([[100, 0], [chartWidth - 100, chartHeight - 100]]);
     
     const { nodes, links: sankeyLinks } = sankeyFormat({
         nodes: sankeyData.nodes.map(d => Object.assign({}, d)),
@@ -329,8 +333,8 @@ function drawSankey() {
     });
 
     const color = d3.scaleOrdinal()
-        .domain(["Green Tea", "White Tea", "Oolong Tea", "Black Tea", "Fresh Leaves", "Withering", "Oxidation", "Fixation (Firing/Steaming)"])
-        .range(["#388e3c", "#e0e0e0", "#f57c00", "#3e2723", highlightColor, "#689f38", "#ef6c00", "#afb42b"]);
+        .domain(["Green Tea", "White Tea", "Oolong Tea", "Black Tea", "Total Harvest", "Oxidation Halted", "Oxidation Allowed"])
+        .range(["var(--light-green)", "#d5c796ff", "#4c6336ff", "#3c4c37ff", "var(--dark-green)", "rgba(218, 206, 183, 1)", "#c8aa7bff"]);
 
     svg.append("g")
         .selectAll("rect")
@@ -341,8 +345,20 @@ function drawSankey() {
         .attr("height", d => d.y1 - d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("fill", d => color(d.id))
-        .attr("stroke", "#888");
+        .on("mouseenter", (event, d) => {
+            const pct = ((d.value / 6.51) * 100).toFixed(1);
+            tooltip.style("display", "block")
+                   .html(`<strong>${d.id}</strong><br>Value: ${d.value} million t (${pct}%)`);
+        })
+        .on("mousemove", event => {
+            tooltip.style("left", (event.pageX + 10) + "px")
+                   .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseleave", () => {
+            tooltip.style("display", "none");
+        });
 
+    // draw links
     svg.append("g")
         .attr("fill", "none")
         .selectAll("path")
@@ -351,18 +367,43 @@ function drawSankey() {
         .attr("class", "sankey-link")
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("stroke", d => color(d.source.id))
-        .attr("stroke-width", d => Math.max(1, d.width));
+        .attr("opacity", 0.6)
+        .attr("stroke-width", d => Math.max(1, d.width))
+        .on("mouseenter", (event, d) => {
+            tooltip.style("display", "block")
+                   .html(`<strong>${d.source.id} → ${d.target.id}</strong><br>Value: ${d.value} million t (${d.pct}%)`);
+        })
+        .on("mousemove", event => {
+            tooltip.style("left", (event.pageX + 10) + "px")
+                   .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseleave", () => {
+            tooltip.style("display", "none");
+        });
 
+    // customize text labels
     svg.append("g")
         .attr("font-family", "sans-serif")
         .attr("font-size", 12)
         .selectAll("text")
         .data(nodes)
         .join("text")
-        .attr("x", d => d.x0 < chartWidth / 2 ? d.x1 + 6 : d.x0 - 6)
+        .attr("x", d => {
+            if (d.id.includes("Oxidation")) return (d.x0 + d.x1) / 2;
+            return d.id === "Total Harvest" ? d.x0 - 6 : d.x1 + 6;
+        })
         .attr("y", d => (d.y1 + d.y0) / 2)
         .attr("dy", "0.35em")
-        .attr("text-anchor", d => d.x0 < chartWidth / 2 ? "start" : "end")
+        .attr("text-anchor", d => {
+            if (d.id.includes("Oxidation")) return "middle";
+            return d.id === "Total Harvest" ? "end" : "start";
+        })
+        .attr("transform", d => {
+            if (d.id.includes("Oxidation")) {
+                return `rotate(-90, ${(d.x0 + d.x1) / 2}, ${(d.y0 + d.y1) / 2})`;
+            }
+            return null;
+        })
         .text(d => d.id)
         .attr("fill", "#333");
 }
@@ -396,15 +437,23 @@ function drawDumbbell() {
         .range([0, chartHeight])
         .padding(0.4);
 
-    const maxVal = d3.max(prodData, d => d.production);
+    // const maxVal = d3.max(prodData, d => d.production);
     const xScale = d3.scaleLinear()
-        .domain([0, maxVal])
+        .domain([0, 20000000])
         .range([0, chartWidth - 100]);
 
     svg.append("g")
         .attr("class", "axis")
         .attr("transform", `translate(0, ${chartHeight})`)
         .call(d3.axisBottom(xScale).ticks(5).tickFormat(d => d / 1000 + "k t"));
+        
+    svg.append("text")
+        .attr("x", chartWidth - 100)
+        .attr("y", chartHeight + 35)
+        .attr("font-size", "12px")
+        .attr("text-anchor", "end")
+        .attr("fill", "#666")
+        .text("Quantity in tons");
         
     svg.append("g")
         .attr("class", "axis")
@@ -425,32 +474,52 @@ function drawDumbbell() {
         .attr("class", "dumbbell-point prod")
         .attr("cy", d => yScale(d.country) + yScale.bandwidth() / 2)
         .attr("cx", d => xScale(d.production))
-        .attr("r", 7)
-        .on("mouseenter", (event, d) => {
-            tooltip.style("display", "block").html(`Production: ${Math.round(d.production)} t`);
-        })
-        .on("mousemove", event => tooltip.style("left", (event.pageX + 10) + "px").style("top", (event.pageY + 10) + "px"))
-        .on("mouseleave", () => tooltip.style("display", "none"));
+        .attr("r", 7);
 
     svg.selectAll(".exp-dot")
-        .data(prodData.filter(d => d.export > 0))
+        .data(prodData)
         .join("circle")
         .attr("class", "dumbbell-point exp")
         .attr("cy", d => yScale(d.country) + yScale.bandwidth() / 2)
         .attr("cx", d => xScale(d.export))
-        .attr("r", 7)
-        .on("mouseenter", (event, d) => {
-            tooltip.style("display", "block").html(`Export: ${Math.round(d.export)} t`);
-        })
-        .on("mousemove", event => tooltip.style("left", (event.pageX + 10) + "px").style("top", (event.pageY + 10) + "px"))
-        .on("mouseleave", () => tooltip.style("display", "none"));
+        .attr("r", 7);
         
-    const legend = svg.append("g").attr("transform", `translate(${chartWidth - 200}, 20)`);
+    // overlay so tooltip activates over any point on the dumbbell line
+    svg.selectAll(".dumbbell-overlay")
+        .data(prodData)
+        .join("rect")
+        .attr("class", "dumbbell-overlay")
+        .attr("x", d => xScale(d.export) - 10)
+        .attr("y", d => yScale(d.country) + yScale.bandwidth() / 2 - 10)
+        .attr("width", d => xScale(d.production) - xScale(d.export) + 20)
+        .attr("height", 20)
+        .attr("fill", "transparent")
+        .style("cursor", "pointer")
+        .on("mouseenter", (event, d) => {
+            let gap = Math.abs(d.production - d.export);
+            let exportPct = d.production > 0 ? ((d.export / d.production) * 100).toFixed(1) + "%" : "0%";
+            tooltip.style("display", "block")
+                   .html(`<strong>${d.country}</strong><br>
+                          Production: ${d3.format(",")(Math.round(d.production))} t<br>
+                          Export: ${d3.format(",")(Math.round(d.export))} t<br>
+                          Percent exported: ${exportPct} t<br>
+                          Production/export difference: ${d3.format(",")(Math.round(gap))}`);
+        })
+        .on("mousemove", event => {
+            tooltip.style("left", (event.pageX + 10) + "px")
+                   .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseleave", () => {
+            tooltip.style("display", "none");
+        });
+    
+    // legend
+    const legend = svg.append("g").attr("transform", `translate(${chartWidth - 190}, ${chartHeight - 60})`);
     legend.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 6).attr("class", "dumbbell-point prod");
-    legend.append("text").attr("x", 12).attr("y", 4).text("Production Vol.").style("font-size", "12px");
+    legend.append("text").attr("x", 12).attr("y", 4).text("Production Volume").style("font-size", "12px");
     
     legend.append("circle").attr("cx", 0).attr("cy", 20).attr("r", 6).attr("class", "dumbbell-point exp");
-    legend.append("text").attr("x", 12).attr("y", 24).text("Export Vol.").style("font-size", "12px");
+    legend.append("text").attr("x", 12).attr("y", 24).text("Export Volume").style("font-size", "12px");
 }
 
 function drawLineChart() {
@@ -464,17 +533,30 @@ function drawLineChart() {
         
     const parseTime = d3.timeParse("%YM%m");
     
-    let cleanPrice = priceData.map(d => ({
-        date: parseTime(d[""]),
-        price: +d["Tea, avg 3 auctions"]
-    })).filter(d => d.date && d.price);
+    // establish data categories
+    const teaSeries = [
+        { key: "Tea, avg 3 auctions", name: "Average across auctions", color: "#d3b380ff" },
+        { key: "Tea, Colombo", name: "Colombo (Sri Lanka)", color: "var(--dark-green)" },
+        { key: "Tea, Kolkata", name: "Kolkata (India)", color: "var(--medium-green)" },
+        { key: "Tea, Mombasa", name: "Mombasa (Kenya)", color: "var(--light-green)" }
+    ];
+
+    let parsedData = priceData.map(d => {
+        let obj = { date: parseTime(d[""]) };
+        teaSeries.forEach(s => {
+            obj[s.key] = d[s.key] ? +d[s.key] : null;
+        });
+        return obj;
+    }).filter(d => d.date);
 
     const xScale = d3.scaleTime()
-        .domain(d3.extent(cleanPrice, d => d.date))
+        .domain(d3.extent(parsedData, d => d.date))
         .range([0, chartWidth]);
 
+    const maxPrice = d3.max(parsedData, d => d3.max(teaSeries, s => d[s.key]));
+
     const yScale = d3.scaleLinear()
-        .domain([0, d3.max(cleanPrice, d => d.price)])
+        .domain([0, maxPrice])
         .nice()
         .range([chartHeight, 0]);
 
@@ -488,22 +570,101 @@ function drawLineChart() {
         .call(d3.axisLeft(yScale));
         
     svg.append("text")
-        .attr("x", 10)
-        .attr("y", 10)
-        .attr("font-size", "12px")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -chartHeight / 2)
+        .attr("y", -40)
+        .attr("font-size", "14px")
+        .attr("text-anchor", "middle")
         .attr("fill", "#666")
         .text("Price per kg (Nominal USD)");
 
-    const line = d3.line()
-        .x(d => xScale(d.date))
-        .y(d => yScale(d.price));
+    svg.append("text")
+        .attr("x", chartWidth / 2)
+        .attr("y", chartHeight + 35)
+        .attr("font-size", "14px")
+        .attr("text-anchor", "middle")
+        .attr("fill", "#666")
+        .text("Year");
 
-    svg.append("path")
-        .datum(cleanPrice)
-        .attr("fill", "none")
-        .attr("stroke", highlightColor)
-        .attr("stroke-width", 2)
-        .attr("d", line);
+    const line = d3.line()
+        .defined(d => d.val !== null && !isNaN(d.val))
+        .x(d => xScale(d.date))
+        .y(d => yScale(d.val));
+
+    teaSeries.forEach(series => {
+        let lineData = parsedData.map(d => ({ date: d.date, val: d[series.key] }));
+        
+        svg.append("path")
+            .datum(lineData)
+            .attr("fill", "none")
+            .attr("stroke", series.color)
+            .attr("stroke-width", series.key === "Tea, avg 3 auctions" ? 2.5 : 1.5)
+            .attr("d", line);
+    });
+
+    const hoverLine = svg.append("line")
+        .attr("y1", 0)
+        .attr("y2", chartHeight)
+        .attr("stroke", "#ccc")
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "4 4")
+        .style("display", "none");
+
+    svg.append("rect")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        .attr("fill", "transparent")
+        .on("mousemove", function(event) {
+            const mouseX = d3.pointer(event)[0];
+            const date0 = xScale.invert(mouseX);
+            
+            const bisectDate = d3.bisector(d => d.date).left;
+            const i = bisectDate(parsedData, date0, 1);
+            const d0 = parsedData[i - 1];
+            const d1 = parsedData[i];
+            if (!d0 || !d1) return;
+            const d = date0 - d0.date > d1.date - date0 ? d1 : d0;
+            
+            let tooltipHTML = `<strong>${d3.timeFormat("%B %Y")(d.date)}</strong><br><br>`;
+            teaSeries.forEach(s => {
+                if (d[s.key] !== null && !isNaN(d[s.key])) {
+                    tooltipHTML += `<span style="color:${s.color};"><strong>${s.name}:</strong></span> $${d[s.key].toFixed(2)} / kg<br>`;
+                }
+            });
+
+            tooltip.style("display", "block")
+                   .html(tooltipHTML)
+                   .style("left", (event.pageX + 15) + "px")
+                   .style("top", (event.pageY + 15) + "px");
+
+            hoverLine.attr("x1", xScale(d.date))
+                     .attr("x2", xScale(d.date))
+                     .style("display", "block");
+        })
+        .on("mouseleave", () => {
+            tooltip.style("display", "none");
+            hoverLine.style("display", "none");
+        });
+
+    const legendGroup = svg.append("g")
+        .attr("transform", `translate(30, 30)`);
+        
+    teaSeries.forEach((s, i) => {
+        legendGroup.append("line")
+            .attr("x1", 0)
+            .attr("x2", 20)
+            .attr("y1", i * 20)
+            .attr("y2", i * 20)
+            .attr("stroke", s.color)
+            .attr("stroke-width", 2);
+
+        legendGroup.append("text")
+            .attr("x", 28)
+            .attr("y", i * 20 + 4)
+            .attr("font-size", "12px")
+            .attr("fill", "#666")
+            .text(s.name);
+    });
 }
 
 function setupScrollama() {

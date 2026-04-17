@@ -1,0 +1,7 @@
+source,target,value_million_tonnes,pct_of_global_harvest,notes
+Total Harvest,Oxidation Halted,2.54,39,ITC type split applied to FAO 6.5M tonne global total
+Total Harvest,Oxidation Allowed,3.97,61,ITC type split applied to FAO 6.5M tonne global total
+Oxidation Halted,White Tea,0.07,1,ITC Annual Bulletin global type split
+Oxidation Halted,Green Tea,2.47,38,ITC Annual Bulletin global type split
+Oxidation Allowed,Oolong Tea,0.20,3,ITC Annual Bulletin global type split
+Oxidation Allowed,Black Tea,3.77,58,ITC Annual Bulletin global type split

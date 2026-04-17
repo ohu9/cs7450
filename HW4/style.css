@@ -31,6 +31,12 @@ h1 {
     color: var(--dark-green);
 }
 
+h2 {
+    font-size: 9pt;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+}
+
 #scrolly {
     display: flex;
     flex-direction: column;
@@ -64,7 +70,7 @@ h1 {
 .step-text.full {
     width: 70%;
     text-align: center;
-    opacity: 1; /* intro and outro always visible */
+    opacity: 1;
 }
 
 .step-text h1 { font-size: 3rem; }
@@ -130,9 +136,8 @@ h1 {
 }
 
 .dumbbell-line { stroke: #888888; stroke-width: 2px; }
-.dumbbell-point.prod { fill: var(--highlight-color); }
-.dumbbell-point.exp { fill: #9c4921; }
-
+.dumbbell-point.prod { fill: var(--medium-green); }
+.dumbbell-point.exp { fill: var(--dark-green); }
 .tooltip {
     position: absolute;
     background: rgba(255, 255, 255, 0.95);
